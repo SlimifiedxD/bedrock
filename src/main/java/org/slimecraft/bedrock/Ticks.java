@@ -25,12 +25,24 @@ public final class Ticks {
         return duration(Duration.ofSeconds(seconds));
     }
 
+    public static long seconds(float seconds) {
+        return seconds((long) seconds * 20);
+    }
+
     public static long minutes(long minutes) {
         return duration(Duration.ofMinutes(minutes));
     }
 
+    public static long minutes(float minutes) {
+        return minutes((long) minutes * 60 * 20);
+    }
+
     public static long hours(long hours) {
         return duration(Duration.ofHours(hours));
+    }
+
+    public static long hours(float hours) {
+        return hours((long) hours * 60 * 60 * 20);
     }
 
     public static long days(long days) {
