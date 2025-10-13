@@ -1,5 +1,6 @@
 plugins {
     `java-library`
+    `maven-publish`
 }
 
 group = "org.slimecraft"
@@ -24,4 +25,16 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "org.slimecraft"
+            artifactId = "bedrock"
+            version = "1.0-SNAPSHOT"
+
+            from(components["java"])
+        }
+    }
 }
