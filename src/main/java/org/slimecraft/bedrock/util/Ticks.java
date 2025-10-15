@@ -1,4 +1,4 @@
-package org.slimecraft.bedrock;
+package org.slimecraft.bedrock.util;
 
 import java.time.Duration;
 

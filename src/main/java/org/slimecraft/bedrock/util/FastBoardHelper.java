@@ -1,4 +1,4 @@
-package org.slimecraft.bedrock;
+package org.slimecraft.bedrock.util;
 
 import fr.mrmicky.fastboard.adventure.FastBoard;
 import net.kyori.adventure.text.Component;

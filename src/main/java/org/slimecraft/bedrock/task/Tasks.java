@@ -1,6 +1,8 @@
-package org.slimecraft.bedrock;
+package org.slimecraft.bedrock.task;
 
 import org.bukkit.Bukkit;
+import org.slimecraft.bedrock.Bedrock;
+import org.slimecraft.bedrock.util.Ticks;
 
 import java.util.function.Consumer;
 

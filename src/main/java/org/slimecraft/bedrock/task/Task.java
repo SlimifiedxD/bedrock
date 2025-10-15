@@ -1,4 +1,4 @@
-package org.slimecraft.bedrock;
+package org.slimecraft.bedrock.task;
 
 import org.bukkit.scheduler.BukkitTask;
 
