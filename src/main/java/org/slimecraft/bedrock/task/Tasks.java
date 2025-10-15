@@ -75,8 +75,8 @@ public final class Tasks {
         final Runnable runnable = () -> {
             final RepeatingTask task = holder[0];
             if (task == null) return;
-            task.incrementTimesRan();
             taskConsumer.accept(task);
+            task.incrementTimesRan();
         };
 
         BukkitTask bukkitTask;
