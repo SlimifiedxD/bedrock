@@ -14,6 +14,9 @@ import java.util.function.Consumer;
 public final class Tasks {
     private Tasks() {}
 
+    /**
+     * Run a task, either blocking or async.
+     */
     public static void run(Consumer<Task> taskConsumer, boolean async) {
         if (async) {
             Bukkit.getScheduler().runTaskAsynchronously(Bedrock.getPlugin(), bukkitTask -> {
@@ -26,10 +29,18 @@ public final class Tasks {
         });
     }
 
+    /**
+     * Run a blocking task.
+     * See {@link #run(Consumer, boolean)}.
+     */
     public static void run(Consumer<Task> taskConsumer) {
         run(taskConsumer, false);
     }
 
+    /**
+     * Run a task, either blocking or async, after the given time in ticks has passed.
+     * @param later The ticks to run the task after.
+     */
     public static void later(Consumer<Task> taskConsumer, long later, boolean async) {
         if (async) {
             Bukkit.getScheduler().runTaskLaterAsynchronously(Bedrock.getPlugin(), bukkitTask -> {
@@ -42,10 +53,19 @@ public final class Tasks {
         }, later);
     }
 
+    /**
+     * Run a blocking task later.
+     * See {@link #later(Consumer, long, boolean)}.
+     */
     public static void later(Consumer<Task> taskConsumer, long later) {
         later(taskConsumer, later, false);
     }
 
+    /**
+     * Run a task, either blocking or async, after the given time in ticks has passed, and repeat it after the given time in ticks has passed until it is cancelled.
+     * @param delay The ticks to run the task after.
+     * @param timer The ticks to repeat the task after.
+     */
     public static void repeating(Consumer<Task> taskConsumer, long delay, long timer, boolean async) {
         if (async) {
             Bukkit.getScheduler().runTaskTimerAsynchronously(Bedrock.getPlugin(), bukkitTask -> {
@@ -58,6 +78,10 @@ public final class Tasks {
         }, delay, timer);
     }
 
+    /**
+     * Run a blocking task later at a certain time interval.
+     * See {@link #repeating(Consumer, long, long, boolean)}.
+     */
     public static void repeating(Consumer<Task> taskConsumer, long delay, long timer) {
         repeating(taskConsumer, delay, timer, false);
     }
