@@ -8,6 +8,7 @@ import org.bukkit.scheduler.BukkitTask;
  */
 public final class Task {
     private final BukkitTask delegate;
+    private long timesRan;
 
     /**
      * Creates a task.
@@ -22,5 +23,13 @@ public final class Task {
      */
     public void cancel() {
         this.delegate.cancel();
+    }
+
+    public long getTimesRan() {
+        return timesRan;
+    }
+
+    void incrementTimesRan() {
+        timesRan++;
     }
 }
