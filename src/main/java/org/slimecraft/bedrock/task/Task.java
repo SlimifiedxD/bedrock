@@ -13,7 +13,7 @@ public sealed class Task permits RepeatingTask {
      * Creates a task.
      * @param delegate The delegate which this task should use.
      */
-    public Task(BukkitTask delegate) {
+    Task(BukkitTask delegate) {
         this.delegate = delegate;
     }
 

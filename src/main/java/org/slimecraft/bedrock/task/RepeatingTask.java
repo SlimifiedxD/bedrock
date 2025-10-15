@@ -9,7 +9,7 @@ public final class RepeatingTask extends Task {
      * Creates a repeating task.
      * @param delegate The delegate which this task should use.
      */
-    public RepeatingTask(BukkitTask delegate) {
+    RepeatingTask(BukkitTask delegate) {
         super(delegate);
     }
 
