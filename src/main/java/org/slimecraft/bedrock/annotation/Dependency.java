@@ -15,12 +15,12 @@ public @interface Dependency {
     /**
      * The {@link LoadStage} in which a dependency should be loaded.
      */
-    LoadStage loadStage();
+    LoadStage loadStage() default LoadStage.SERVER;
 
     /**
      * The {@link LoadOrder} of when the dependency should be loaded.
      */
-    LoadOrder loadOrder();
+    LoadOrder loadOrder() default LoadOrder.BEFORE;
 
     /**
      * If the dependency is required for the plugin to function.
