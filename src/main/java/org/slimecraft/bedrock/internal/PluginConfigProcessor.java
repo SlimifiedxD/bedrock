@@ -1,5 +1,7 @@
 package org.slimecraft.bedrock.internal;
 
+import org.slimecraft.bedrock.dependency.LoadOrder;
+import org.slimecraft.bedrock.dependency.LoadStage;
 import org.slimecraft.bedrock.annotation.PluginConfig;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -12,6 +14,7 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,9 +52,50 @@ public class PluginConfigProcessor extends AbstractProcessor {
                             final AnnotationValue explicitValue = values.get(method);
                             final Object paramValue = explicitValue != null
                                     ? explicitValue.getValue()
-                                    : method.getDefaultValue().getValue();
+                                    : method.getDefaultValue() != null ? method.getDefaultValue().getValue() : null;
+                            if (paramValue == null || paramValue instanceof String string && string.isEmpty()) {
+                                continue;
+                            }
                             if (paramName.equals("apiVersion")) {
                                 data.put("api-version", paramValue);
+                                continue;
+                            } else if (paramName.equals("dependencies")) {
+                                final List<? extends AnnotationValue> depValues = (List<? extends AnnotationValue>) paramValue;
+                                if (depValues.isEmpty()) continue;
+                                final Map<String, Object> depMap = (Map<String, Object>) data.computeIfAbsent("dependencies", k -> new LinkedHashMap<>());
+                                for (AnnotationValue value : depValues) {
+                                    final AnnotationMirror depMirror = (AnnotationMirror) value.getValue();
+                                    String name = null;
+                                    LoadOrder loadOrder = null;
+                                    boolean required = false;
+                                    boolean joinClasspath = false;
+                                    LoadStage loadStage = null;
+                                    for (final Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : depMirror.getElementValues().entrySet()) {
+                                        final String key = entry.getKey().getSimpleName().toString();
+                                        final Object entryValue = entry.getValue().getValue();
+
+                                        switch (key) {
+                                            case "name" -> name = (String) entryValue;
+                                            case "loadOrder" -> {
+                                                final VariableElement enumConst = (VariableElement) entryValue;
+                                                loadOrder = LoadOrder.valueOf(enumConst.getSimpleName().toString());
+                                            }
+                                            case "required" -> required = (boolean) entryValue;
+                                            case "joinClasspath" -> joinClasspath = (boolean) entryValue;
+                                            case "loadStage" -> {
+                                                final VariableElement enumConst = (VariableElement) entryValue;
+                                                loadStage = LoadStage.valueOf(enumConst.getSimpleName().toString());
+                                            }
+                                        }
+                                    }
+                                    final Map<String, Object> mapToUse = (Map<String, Object>) (loadStage == LoadStage.BOOTSTRAP
+                                                                                ? depMap.computeIfAbsent("bootstrap", k -> new LinkedHashMap<>())
+                                                                                : depMap.computeIfAbsent("server", k -> new LinkedHashMap<>()));
+                                    final Map<String, Object> pluginDep = (Map<String, Object>) mapToUse.computeIfAbsent(name, k -> new LinkedHashMap<>());
+                                    pluginDep.put("load", loadOrder.toString());
+                                    pluginDep.put("required", required);
+                                    pluginDep.put("join-classpath", joinClasspath);
+                                }
                                 continue;
                             }
                             data.put(paramName, paramValue);
