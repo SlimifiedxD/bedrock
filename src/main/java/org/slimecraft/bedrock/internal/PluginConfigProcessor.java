@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This class processes annotations for {@link PluginConfig}s. This is not meant to be used by end users.
+ */
 @SupportedAnnotationTypes("org.slimecraft.bedrock.annotation.PluginConfig")
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
 public class PluginConfigProcessor extends AbstractProcessor {

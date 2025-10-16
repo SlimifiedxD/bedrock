@@ -14,6 +14,7 @@ import org.slimecraft.bedrock.util.FastBoardHelper;
 /**
  * The main class for bedrock. {@link Bedrock#init(Plugin)} initializes Bedrock and allows the rest of the library to use
  * the functionality it provides.
+ * This class should not be touched by end-users.
  */
 public final class Bedrock {
     static {
