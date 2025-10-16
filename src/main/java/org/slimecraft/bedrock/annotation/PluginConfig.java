@@ -5,6 +5,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotate a class that extends {@link org.bukkit.plugin.java.JavaPlugin}; this will automatically generate all
+ * boilerplate and will bootstrap Bedrock.
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
 public @interface PluginConfig {
