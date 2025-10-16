@@ -126,13 +126,11 @@ public class PluginConfigProcessor extends AbstractProcessor {
                                             package org.slimecraft.bedrock.generated;
                                             
                                             import org.slimecraft.bedrock.internal.Bedrock;
-                                            import org.slimecraft.bedrock.util.FastBoardHelper;
                                             import org.bukkit.plugin.java.JavaPlugin;
                                             
                                             public class GeneratedBedrockInit {
                                                 static {
                                                     Bedrock.init(JavaPlugin.getProvidingPlugin(%s));
-                                                    FastBoardHelper.init();
                                                 }
                                             }
                                             """.formatted(codeName));
