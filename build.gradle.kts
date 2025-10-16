@@ -17,6 +17,7 @@ repositories {
 dependencies {
     api("io.github.classgraph:classgraph:4.8.173")
     api("fr.mrmicky:fastboard:2.1.5")
+    implementation("org.yaml:snakeyaml:2.5")
     compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
