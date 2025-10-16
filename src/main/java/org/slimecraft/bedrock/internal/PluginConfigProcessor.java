@@ -81,7 +81,7 @@ public class PluginConfigProcessor extends AbstractProcessor {
                                     """
                                             package org.slimecraft.bedrock.generated;
                                             
-                                            import org.slimecraft.bedrock.Bedrock;
+                                            import org.slimecraft.bedrock.internal.Bedrock;
                                             import org.bukkit.plugin.java.JavaPlugin;
                                             
                                             public class GeneratedBedrockInit {
