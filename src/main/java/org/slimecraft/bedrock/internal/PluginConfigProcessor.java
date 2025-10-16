@@ -1,5 +1,6 @@
-package org.slimecraft.bedrock.annotation;
+package org.slimecraft.bedrock.internal;
 
+import org.slimecraft.bedrock.annotation.PluginConfig;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 

@@ -2,7 +2,7 @@ package org.slimecraft.bedrock.task;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
-import org.slimecraft.bedrock.Bedrock;
+import org.slimecraft.bedrock.internal.Bedrock;
 import org.slimecraft.bedrock.util.Ticks;
 
 import java.util.function.Consumer;

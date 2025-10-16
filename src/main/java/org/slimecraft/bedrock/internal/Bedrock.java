@@ -1,4 +1,4 @@
-package org.slimecraft.bedrock;
+package org.slimecraft.bedrock.internal;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
@@ -8,8 +8,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slimecraft.bedrock.event.Events;
 import org.slimecraft.bedrock.util.FastBoardHelper;
 
