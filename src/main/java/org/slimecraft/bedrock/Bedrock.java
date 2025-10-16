@@ -18,6 +18,13 @@ import org.slimecraft.bedrock.util.FastBoardHelper;
  * the functionality it provides.
  */
 public final class Bedrock {
+    static {
+        try {
+            Class.forName("org.slimecraft.bedrock.generated.GeneratedBedrockInit");
+        } catch (ClassNotFoundException ignored) {
+            ignored.printStackTrace();
+        }
+    }
     private static Plugin plugin;
 
     private Bedrock() {

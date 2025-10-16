@@ -3,10 +3,8 @@ package org.slimecraft.bedrock.annotation;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.*;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
@@ -17,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 @SupportedAnnotationTypes("org.slimecraft.bedrock.annotation.PluginConfig")
+@SupportedSourceVersion(SourceVersion.RELEASE_21)
 public class PluginConfigProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
@@ -30,8 +29,12 @@ public class PluginConfigProcessor extends AbstractProcessor {
                         final Map<? extends ExecutableElement, ? extends AnnotationValue> values = mirror.getElementValues();
                         final Map<String, Object> data = new LinkedHashMap<>();
                         final TypeElement typeElement = (TypeElement) element;
+                        final String qualifiedName = typeElement.getQualifiedName().toString();
+                        final TypeElement javaPluginElement = processingEnv.getElementUtils().getTypeElement("org.bukkit.plugin.java.JavaPlugin");
+                        if (javaPluginElement == null) continue;
+                        if (!processingEnv.getTypeUtils().isAssignable(typeElement.asType(), javaPluginElement.asType())) continue;
 
-                        data.put("main", typeElement.getQualifiedName().toString());
+                        data.put("main", qualifiedName);
 
                         for (ExecutableElement method : mirror
                                 .getAnnotationType()
@@ -53,7 +56,7 @@ public class PluginConfigProcessor extends AbstractProcessor {
                             data.put(paramName, paramValue);
                         }
 
-                        final FileObject file = filer.createResource(
+                        final FileObject yamlFile = filer.createResource(
                                 StandardLocation.CLASS_OUTPUT,
                                 "",
                                 "paper-plugin.yml"
@@ -66,8 +69,26 @@ public class PluginConfigProcessor extends AbstractProcessor {
 
                         final Yaml yaml = new Yaml(options);
 
-                        try (final Writer writer = file.openWriter()) {
+                        try (final Writer writer = yamlFile.openWriter()) {
                             yaml.dump(data, writer);
+                        }
+
+                        final FileObject bedrockInitFile = filer.createSourceFile("org.slimecraft.bedrock.generated.GeneratedBedrockInit");
+                        final String codeName = qualifiedName + ".class";
+                        try (final Writer writer = bedrockInitFile.openWriter()) {
+                            writer.write(
+                                    """
+                                            package org.slimecraft.bedrock.generated;
+                                            
+                                            import org.slimecraft.bedrock.Bedrock;
+                                            import org.bukkit.plugin.java.JavaPlugin;
+                                            
+                                            public class GeneratedBedrockInit {
+                                                static {
+                                                    Bedrock.init(JavaPlugin.getProvidingPlugin(%s));
+                                                }
+                                            }
+                                            """.formatted(codeName));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
