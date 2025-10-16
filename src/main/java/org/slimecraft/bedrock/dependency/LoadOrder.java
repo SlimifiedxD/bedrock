@@ -13,7 +13,7 @@ public enum LoadOrder {
      */
     AFTER,
     /**
-     * The dependency will have undefined ordering behaviour; it may run before or after.
+     * The dependency will have undefined ordering behaviour; it may be loaded before or after your plugin.
      */
     OMIT
 }
