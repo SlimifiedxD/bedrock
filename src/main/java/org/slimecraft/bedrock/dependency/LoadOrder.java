@@ -1,5 +1,8 @@
 package org.slimecraft.bedrock.dependency;
 
+/**
+ * Represents the order in which a dependency is loaded.
+ */
 public enum LoadOrder {
     /**
      * The dependency will be loaded before your plugin.

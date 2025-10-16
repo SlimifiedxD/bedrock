@@ -1,5 +1,8 @@
 package org.slimecraft.bedrock.dependency;
 
+/**
+ * Represents the stage in which a dependency is loaded.
+ */
 public enum LoadStage {
     /**
      * Dependencies that are used in the boostrap phase.
