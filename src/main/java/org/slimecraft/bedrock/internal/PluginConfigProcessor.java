@@ -73,9 +73,18 @@ public class PluginConfigProcessor extends AbstractProcessor {
                                     boolean required = false;
                                     boolean joinClasspath = false;
                                     LoadStage loadStage = null;
-                                    for (final Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : depMirror.getElementValues().entrySet()) {
-                                        final String key = entry.getKey().getSimpleName().toString();
-                                        final Object entryValue = entry.getValue().getValue();
+                                    for (ExecutableElement depMethod : depMirror.getAnnotationType()
+                                            .asElement()
+                                            .getEnclosedElements()
+                                            .stream()
+                                            .filter(e -> e.getKind() == ElementKind.METHOD)
+                                            .map(ExecutableElement.class::cast)
+                                            .toList()) {
+                                        final String key = depMethod.getSimpleName().toString();
+                                        final AnnotationValue valueObj = depMirror.getElementValues().get(depMethod);
+                                        final Object entryValue = valueObj != null
+                                                ? valueObj.getValue()
+                                                : depMethod.getDefaultValue() != null ? depMethod.getDefaultValue().getValue() : null;
 
                                         switch (key) {
                                             case "name" -> name = (String) entryValue;
