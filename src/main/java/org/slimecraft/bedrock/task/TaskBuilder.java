@@ -5,6 +5,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.slimecraft.bedrock.internal.Bedrock;
 import org.slimecraft.bedrock.util.Ticks;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public final class TaskBuilder {
@@ -14,6 +15,7 @@ public final class TaskBuilder {
     private Consumer<Task> whenStopped;
     private long expireAfter;
     private boolean async;
+    private BiConsumer<Task, Throwable> whenError;
 
     public TaskBuilder() {
     }
@@ -48,6 +50,11 @@ public final class TaskBuilder {
         return this;
     }
 
+    public TaskBuilder whenError(BiConsumer<Task, Throwable> whenError) {
+        this.whenError = whenError;
+        return this;
+    }
+
     public Task run() {
         return this.fromFields();
     }
@@ -59,7 +66,15 @@ public final class TaskBuilder {
             final Task task = mutableTask[0];
             if (task == null) return;
             if (whenRan != null) {
-                whenRan.accept(task);
+                if (whenError != null) {
+                     try {
+                         whenRan.accept(task);
+                     } catch (Throwable throwable) {
+                         whenError.accept(task, throwable);
+                     }
+                } else {
+                    whenRan.accept(task);
+                }
             }
             task.incrementTimesRan();
         };
