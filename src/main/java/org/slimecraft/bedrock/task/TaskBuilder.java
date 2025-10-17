@@ -13,6 +13,7 @@ public final class TaskBuilder {
     private Consumer<Task> whenRan;
     private Consumer<Task> whenStopped;
     private long expireAfter;
+    private boolean async;
 
     public TaskBuilder() {
     }
@@ -42,6 +43,11 @@ public final class TaskBuilder {
         return this;
     }
 
+    public TaskBuilder async() {
+        this.async = true;
+        return this;
+    }
+
     public Task run() {
         return this.fromFields();
     }
@@ -59,13 +65,29 @@ public final class TaskBuilder {
         };
 
         if (delay == null && repeat == null) {
-            bukkitTask = Bukkit.getScheduler().runTask(Bedrock.getPlugin(), runnable);
+            if (!async) {
+                bukkitTask = Bukkit.getScheduler().runTask(Bedrock.getPlugin(), runnable);
+            } else {
+                bukkitTask = Bukkit.getScheduler().runTaskAsynchronously(Bedrock.getPlugin(), runnable);
+            }
         } else if (delay != null && repeat == null) {
-            bukkitTask = Bukkit.getScheduler().runTaskLater(Bedrock.getPlugin(), runnable, delay);
+            if (!async) {
+                bukkitTask = Bukkit.getScheduler().runTaskLater(Bedrock.getPlugin(), runnable, delay);
+            } else {
+                bukkitTask = Bukkit.getScheduler().runTaskLaterAsynchronously(Bedrock.getPlugin(), runnable, delay);
+            }
         } else if (delay == null) {
-            bukkitTask = Bukkit.getScheduler().runTaskTimer(Bedrock.getPlugin(), runnable, Ticks.none(), repeat);
+            if (!async) {
+                bukkitTask = Bukkit.getScheduler().runTaskTimer(Bedrock.getPlugin(), runnable, Ticks.none(), repeat);
+            } else {
+                bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Bedrock.getPlugin(), runnable, Ticks.none(), repeat);
+            }
         } else {
-            bukkitTask = Bukkit.getScheduler().runTaskTimer(Bedrock.getPlugin(), runnable, delay, repeat);
+            if (!async) {
+                bukkitTask = Bukkit.getScheduler().runTaskTimer(Bedrock.getPlugin(), runnable, delay, repeat);
+            } else {
+                bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Bedrock.getPlugin(), runnable, delay, repeat);
+            }
         }
         mutableTask[0] = new Task(bukkitTask, expireAfter, whenStopped);
 
