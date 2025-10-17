@@ -1,9 +1,8 @@
-package org.slimecraft.bedrock.task.builder;
+package org.slimecraft.bedrock.task;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import org.slimecraft.bedrock.internal.Bedrock;
-import org.slimecraft.bedrock.task.Task;
 import org.slimecraft.bedrock.util.Ticks;
 
 import java.util.function.Consumer;
@@ -12,8 +11,11 @@ public final class TaskBuilder {
     private Long delay;
     private Long repeat;
     private Consumer<Task> whenRan;
+    private Consumer<Task> whenStopped;
+    private long expireAfter;
 
-    public TaskBuilder() {}
+    public TaskBuilder() {
+    }
 
     public TaskBuilder delay(long delay) {
         this.delay = delay;
@@ -25,38 +27,47 @@ public final class TaskBuilder {
         return this;
     }
 
-    public TaskBuilder ran(Consumer<Task> whenRan) {
+    public TaskBuilder whenRan(Consumer<Task> whenRan) {
         this.whenRan = whenRan;
         return this;
     }
 
-    public Task run() {
-        return new Task(this.fromFields());
+    public TaskBuilder whenStopped(Consumer<Task> whenStopped) {
+        this.whenStopped = whenStopped;
+        return this;
     }
 
-    private BukkitTask fromFields() {
-        final BukkitTask[] mutableTask = new BukkitTask[1];
+    public TaskBuilder expireAfter(long expireAfter) {
+        this.expireAfter = expireAfter;
+        return this;
+    }
+
+    public Task run() {
+        return this.fromFields();
+    }
+
+    private Task fromFields() {
+        final BukkitTask bukkitTask;
+        final Task[] mutableTask = new Task[1];
+        final Runnable runnable = () -> {
+            final Task task = mutableTask[0];
+            if (task == null) return;
+            if (whenRan != null) {
+                whenRan.accept(task);
+            }
+            task.incrementTimesRan();
+        };
+
         if (delay == null && repeat == null) {
-            Bukkit.getScheduler().runTask(Bedrock.getPlugin(), bukkitTask -> {
-                mutableTask[0] = bukkitTask;
-                whenRan.accept(new Task(bukkitTask));
-            });
+            bukkitTask = Bukkit.getScheduler().runTask(Bedrock.getPlugin(), runnable);
         } else if (delay != null && repeat == null) {
-            Bukkit.getScheduler().runTaskLater(Bedrock.getPlugin(), bukkitTask -> {
-                mutableTask[0] = bukkitTask;
-                whenRan.accept(new Task(bukkitTask));
-            }, delay);
+            bukkitTask = Bukkit.getScheduler().runTaskLater(Bedrock.getPlugin(), runnable, delay);
         } else if (delay == null) {
-            Bukkit.getScheduler().runTaskTimer(Bedrock.getPlugin(), bukkitTask -> {
-                mutableTask[0] = bukkitTask;
-                whenRan.accept(new Task(bukkitTask));
-            }, Ticks.none(), repeat);
+            bukkitTask = Bukkit.getScheduler().runTaskTimer(Bedrock.getPlugin(), runnable, Ticks.none(), repeat);
         } else {
-            Bukkit.getScheduler().runTaskTimer(Bedrock.getPlugin(), bukkitTask -> {
-                mutableTask[0] = bukkitTask;
-                whenRan.accept(new Task(bukkitTask));
-            }, delay, repeat);
+            bukkitTask = Bukkit.getScheduler().runTaskTimer(Bedrock.getPlugin(), runnable, delay, repeat);
         }
+        mutableTask[0] = new Task(bukkitTask, expireAfter, whenStopped);
 
         return mutableTask[0];
     }

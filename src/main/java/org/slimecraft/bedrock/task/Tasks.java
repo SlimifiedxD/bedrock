@@ -11,7 +11,11 @@ import java.util.function.Consumer;
  * A class that provides simple methods to run tasks that are sync or async, without legacy Bukkit methods.
  * The various {@link Long}s that are taken in by the methods can be retrieved using {@link Ticks} for a more
  * developer-friendly experience.
+ *
+ * <br><br>This is being deprecated because of the new {@link TaskBuilder} API which is much more flexible
+ * and allows for the composition of tasks. This API cannot keep up.
  */
+@Deprecated(forRemoval = true)
 public final class Tasks {
     private Tasks() {
     }
@@ -22,12 +26,12 @@ public final class Tasks {
     public static void run(Consumer<Task> taskConsumer, boolean async) {
         if (async) {
             Bukkit.getScheduler().runTaskAsynchronously(Bedrock.getPlugin(), bukkitTask -> {
-                taskConsumer.accept(new Task(bukkitTask));
+                taskConsumer.accept(new Task(bukkitTask, 0, null));
             });
             return;
         }
         Bukkit.getScheduler().runTask(Bedrock.getPlugin(), bukkitTask -> {
-            taskConsumer.accept(new Task(bukkitTask));
+            taskConsumer.accept(new Task(bukkitTask, 0, null));
         });
     }
 
@@ -47,12 +51,12 @@ public final class Tasks {
     public static void later(Consumer<Task> taskConsumer, long later, boolean async) {
         if (async) {
             Bukkit.getScheduler().runTaskLaterAsynchronously(Bedrock.getPlugin(), bukkitTask -> {
-                taskConsumer.accept(new Task(bukkitTask));
+                taskConsumer.accept(new Task(bukkitTask, 0, null));
             }, later);
             return;
         }
         Bukkit.getScheduler().runTaskLater(Bedrock.getPlugin(), bukkitTask -> {
-            taskConsumer.accept(new Task(bukkitTask));
+            taskConsumer.accept(new Task(bukkitTask, 0, null));
         }, later);
     }
 
@@ -70,10 +74,10 @@ public final class Tasks {
      * @param delay The ticks to run the task after.
      * @param timer The ticks to repeat the task after.
      */
-    public static void repeating(Consumer<RepeatingTask> taskConsumer, long delay, long timer, boolean async) {
-        final RepeatingTask[] holder = new RepeatingTask[1];
+    public static void repeating(Consumer<Task> taskConsumer, long delay, long timer, boolean async) {
+        final Task[] holder = new Task[1];
         final Runnable runnable = () -> {
-            final RepeatingTask task = holder[0];
+            final Task task = holder[0];
             if (task == null) return;
             taskConsumer.accept(task);
             task.incrementTimesRan();
@@ -86,14 +90,14 @@ public final class Tasks {
             bukkitTask = Bukkit.getScheduler().runTaskTimer(Bedrock.getPlugin(), runnable, delay, timer);
         }
 
-        holder[0] = new RepeatingTask(bukkitTask);
+        holder[0] = new Task(bukkitTask, 0, null);
     }
 
     /**
      * Run a blocking task later at a certain time interval.
      * See {@link #repeating(Consumer, long, long, boolean)}.
      */
-    public static void repeating(Consumer<RepeatingTask> taskConsumer, long delay, long timer) {
+    public static void repeating(Consumer<Task> taskConsumer, long delay, long timer) {
         repeating(taskConsumer, delay, timer, false);
     }
 }
