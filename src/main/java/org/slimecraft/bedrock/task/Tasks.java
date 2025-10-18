@@ -2,6 +2,7 @@ package org.slimecraft.bedrock.task;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.ApiStatus;
 import org.slimecraft.bedrock.internal.Bedrock;
 import org.slimecraft.bedrock.util.Ticks;
 
@@ -12,10 +13,10 @@ import java.util.function.Consumer;
  * The various {@link Long}s that are taken in by the methods can be retrieved using {@link Ticks} for a more
  * developer-friendly experience.
  *
- * <br><br>This is being deprecated because of the new {@link TaskBuilder} API which is much more flexible
+ * <br><br>This is obsolete because of the new {@link TaskBuilder} API which is much more flexible
  * and allows for the composition of tasks. This API cannot keep up.
  */
-@Deprecated(forRemoval = true)
+@ApiStatus.Obsolete
 public final class Tasks {
     private Tasks() {
     }
