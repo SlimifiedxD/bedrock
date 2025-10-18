@@ -5,11 +5,15 @@ import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class ItemBuilder implements MaterialBuilderStep, OptionalBuilderStep {
     private ItemBuilder() {}
@@ -19,10 +23,17 @@ public class ItemBuilder implements MaterialBuilderStep, OptionalBuilderStep {
     }
 
     private ItemStack itemStack;
+    private MiniMessage miniMessage = MiniMessage.miniMessage();
 
     @Override
     public OptionalBuilderStep material(Material material) {
         itemStack = ItemStack.of(material);
+        return this;
+    }
+
+    @Override
+    public OptionalBuilderStep miniMessage(MiniMessage miniMessage) {
+        this.miniMessage = miniMessage;
         return this;
     }
 
@@ -32,8 +43,28 @@ public class ItemBuilder implements MaterialBuilderStep, OptionalBuilderStep {
     }
 
     @Override
+    public OptionalBuilderStep name(String name) {
+        name(deserialize(name));
+        return this;
+    }
+
+    @Override
     public OptionalBuilderStep lore(ItemLore lore) {
         return component(DataComponentTypes.LORE, lore);
+    }
+
+    @Override
+    public OptionalBuilderStep lore(List<String> lore) {
+        final ItemLore.Builder itemLore = ItemLore.lore();
+        lore.forEach(s -> {
+            itemLore.addLine(deserialize(s));
+        });
+        lore(itemLore.build());
+        return this;
+    }
+
+    private Component deserialize(String input) {
+        return miniMessage.deserialize(input).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 
     @Override

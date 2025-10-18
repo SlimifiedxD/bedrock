@@ -4,15 +4,24 @@ import io.papermc.paper.datacomponent.DataComponentBuilder;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public interface OptionalBuilderStep {
+    OptionalBuilderStep miniMessage(MiniMessage miniMessage);
+
     OptionalBuilderStep name(Component name);
 
+    OptionalBuilderStep name(String name);
+
     OptionalBuilderStep lore(ItemLore lore);
+
+    OptionalBuilderStep lore(List<String> lore);
 
     OptionalBuilderStep amount(int amount);
 
