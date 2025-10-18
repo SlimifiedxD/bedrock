@@ -1,5 +1,8 @@
 package org.slimecraft.bedrock.internal;
 
+import com.sun.jdi.ClassType;
+import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
+import io.papermc.paper.plugin.loader.PluginLoader;
 import org.slimecraft.bedrock.dependency.LoadOrder;
 import org.slimecraft.bedrock.dependency.LoadStage;
 import org.slimecraft.bedrock.annotation.PluginConfig;
@@ -9,6 +12,10 @@ import org.yaml.snakeyaml.Yaml;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
@@ -108,6 +115,18 @@ public class PluginConfigProcessor extends AbstractProcessor {
                                     pluginDep.put("required", required);
                                     pluginDep.put("join-classpath", joinClasspath);
                                 }
+                                continue;
+                            } else if (paramName.equals("bootstrapper") || paramName.equals("loader")) {
+                                final DeclaredType declaredType = (DeclaredType) paramValue;
+                                final TypeElement typeElementValue = (TypeElement) declaredType.asElement();
+
+                                final Types typeUtils = processingEnv.getTypeUtils();
+                                final Elements elementUtils = processingEnv.getElementUtils();
+                                final TypeMirror bootstrapType = elementUtils.getTypeElement("io.papermc.paper.plugin.bootstrap.PluginBootstrap").asType();
+                                final TypeMirror pluginLoaderType = elementUtils.getTypeElement("io.papermc.paper.plugin.loader.PluginLoader").asType();
+                                final TypeMirror typeMirror = declaredType.asElement().asType();
+                                if (typeUtils.isSameType(typeMirror, bootstrapType) || typeUtils.isSameType(typeMirror, pluginLoaderType)) continue;
+                                data.put(paramName, typeElementValue.getQualifiedName().toString());
                                 continue;
                             }
                             data.put(paramName, paramValue);

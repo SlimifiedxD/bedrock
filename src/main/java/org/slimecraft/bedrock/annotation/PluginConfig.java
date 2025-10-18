@@ -1,5 +1,8 @@
 package org.slimecraft.bedrock.annotation;
 
+import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
+import io.papermc.paper.plugin.loader.PluginLoader;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -35,12 +38,12 @@ public @interface PluginConfig {
     /**
      * The {@link io.papermc.paper.plugin.bootstrap.PluginBootstrap} of the plugin.
      */
-    String bootstrapper() default "";
+    Class<? extends PluginBootstrap> bootstrapper() default PluginBootstrap.class;
 
     /**
      * The {@link io.papermc.paper.plugin.loader.PluginLoader} of the plugin.
      */
-    String loader() default "";
+    Class<? extends PluginLoader> loader() default PluginLoader.class;
 
     /**
      * The dependencies of the plugin.
