@@ -57,7 +57,7 @@ public final class Bedrock {
                     clazz.getMethod("getHandlerList");
                     Bukkit.getServer().getPluginManager().registerEvent(clazz,
                             bukkitListener,
-                            EventPriority.LOWEST,
+                            EventPriority.HIGHEST,
                             (listener, event) -> {
                                 Events.fire(event);
                             }, plugin);
