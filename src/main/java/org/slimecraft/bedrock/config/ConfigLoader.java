@@ -64,11 +64,8 @@ public class ConfigLoader {
         }
         if (contents == null) return;
         for (Field field : config.getClass().getDeclaredFields()) {
-            System.out.println("DONT MAKE ME RETURN!!!!");
             if (!field.isAnnotationPresent(ConfigurationValue.class)) continue;
-            System.out.println("I MADE IT MOM!");
             final String configKey = field.getDeclaredAnnotation(ConfigurationValue.class).value();
-            System.out.println(configKey);
             field.set(config, contents.get(configKey));
         }
     }

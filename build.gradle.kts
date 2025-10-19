@@ -28,6 +28,11 @@ tasks.test {
     useJUnitPlatform()
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
@@ -36,6 +41,8 @@ publishing {
             version = "1.0-SNAPSHOT"
 
             from(components["java"])
+            artifact(tasks["javadocJar"])
+            artifact(tasks["sourcesJar"])
         }
     }
 }
