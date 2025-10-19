@@ -1,0 +1,41 @@
+---
+title: Events
+sidebar:
+  order: 4
+---
+
+Events are one of the most important parts of a plugin. Of course, that means they
+get first class treatment within the framework. First, let's cover some definitions:
+
+> Listener: Something that can act upon an event.
+
+> Event Node: An object that can have an arbitary amount of listeners and children event nodes.
+
+> Global Event Node: The root event node to which all events are propagated and all children are directly/indirectly attached to.
+
+```java
+EventNode.global().addListener(PlayerJoinEvent.class, event -> {
+    final Player player = event.getPlayer();
+
+    player.sendMessage(Component.text("You joined the game!"));
+});
+```
+
+An event can be manually fired to the global event node by doing:
+
+```java
+Events.fire(new MyCustomEvent());
+```
+
+All listeners on the global event node and its children will have this event be propagated to them,
+and will be able to do something with them.
+
+There is also a builder for events that can be used:
+
+```java
+node.addListener(EventListener.builder(PlayerJoinEvent.class, event -> {
+    event.getPlayer().sendMessage(Component.text("Your health is less than or equal to 15!"));
+}).predicate(event -> event.getPlayer().getHealth() <= 15));
+```
+
+As you can see, this system is far more powerful than Bukkit's standard event listener system.

@@ -1,0 +1,19 @@
+---
+title: Ticks
+---
+
+Ticks is a standard utility class that turns magic numbers like `20L * 3` into `Ticks.seconds(3)`.
+Showcasing different units of time:
+
+```java
+Duration duration = ...
+Ticks.duration(duration);
+Ticks.seconds(1);
+Ticks.minutes(1);
+Ticks.hours(1);
+Ticks.days(1);
+Ticks.seconds(1.5);
+```
+
+There are also methods that take in fractional values (like decimals) and convert them to ticks,
+as seen above.

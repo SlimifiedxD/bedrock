@@ -1,0 +1,36 @@
+---
+title: Configuration
+---
+
+Configuration is a key part of plugins; they allow the user to customize messages, behaviour, or
+even make their own mechanics. Of course, since configuration is such a vital part of plugin
+development, like everything else, Bedrock provides first-class support for it.
+
+> Configuration should always be stateless; there are no exceptions.
+
+Since configuration is stateless, there must be a no-args constructor in the class annotated with `@Configuration`.
+Let's create a simple `Config` class:
+
+```java
+@Configuration("cool")
+public class Config {
+    @ConfigurationValue("join")
+    public String join = "<player> has joined!";
+}
+```
+
+Now let's use it:
+
+```java
+final Config config = ConfigLoader.load(Config.class, FileExtension.YML);
+
+EventNode.global().addListener(PlayerJoinEvent.class, event -> {
+    final Player player = event.getPlayer();
+    event.joinMessage(MiniMessage.miniMessage().deserialize(config.join, TagResolver.resolver("player",
+        Tag.selfClosingInserting(player.displayName()))));
+    });
+```
+
+Just like that, we have created a simple config for our plugin.
+
+> If `EventNode` is an unfamiliar concept, please refer to <a href="../events">Events</a>.

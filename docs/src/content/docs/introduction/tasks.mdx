@@ -1,0 +1,81 @@
+---
+title: Tasks
+---
+
+Tasks are an essential part of plugin development, and yet they are so convoluted. Of course, Bedrock makes them much
+simpler.
+
+A standard synchronous task:
+
+```java
+Tasks.run(task -> {
+    System.out.println("I'm from a task!");
+});
+```
+
+A task that will run later:
+
+```java
+Tasks.later(task -> {
+    System.out.println("I'm from a task that ran one second later!");
+}, Ticks.seconds(1));
+```
+
+A repeating task:
+
+```java
+Tasks.repeating(task -> {
+    if (task.getTimesRan() == 10) {
+        System.out.println("ran ten times");
+        task.cancel();
+    }
+}, Ticks.seconds(1), Ticks.seconds(1));
+
+```
+
+Tasks can be made async in a similar fashion, with the exception of passing in **true** as the last parameter to indicate that it's async.
+For example:
+
+```java
+Tasks.later(task -> {
+    // do some async logic (e.g. fetching from a db)
+}, Ticks.seconds(1), true)
+```
+
+> The above API has since been replacted with a new builder API. It is considered legacy and will not receive updates.
+
+The builder API is the natural next step once you feel like you need more customization over your tasks.
+Let's make a task that runs 3 times, cancels afterwards, and prints `"cancelled"` after it stops.
+
+The old API:
+
+```java
+Tasks.repeating(task -> {
+    if (task.getTimesRan() == 3) {
+        System.out.println("3 TIMES!");
+        task.cancel();
+        return;
+    }
+    System.out.println("I JUST RAN!");
+}, Ticks.none(), Ticks.seconds(1));
+```
+
+The new builder API:
+
+```java
+Task.builder()
+    .expireAfter(3)
+    .whenRan(task -> {
+        System.out.println("I JUST RAN!");
+    })
+    .whenStopped(task -> {
+        System.out.println("3 TIMES!");
+    })
+    .repeat(Ticks.seconds(1))
+    .run();
+```
+
+As you can see, the builder is much more fluent and human-readable, though it may
+be overkill to use for simple tasks. In that case, `Tasks` can be used, though
+it is advised to use the `TaskBuilder` acessed with `Task.builder()` for
+future API updates.

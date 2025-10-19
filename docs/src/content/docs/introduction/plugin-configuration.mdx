@@ -1,0 +1,38 @@
+---
+title: Plugin Configuration
+---
+
+Not only can you choose a name for your plugin, but you can also do everything else
+you would be able to do in a yaml file! Let's try it out:
+
+```java
+@Plugin(
+    name = "example",
+    description = "An example plugin that adds example features."
+)
+public class ExamplePlugin extends JavaPlugin {}
+```
+
+Let's add support for PAPI (Placeholder API):
+
+```java
+@Plugin(
+    name = "example",
+    description = "An example plugin that adds example features.",
+    dependencies = {
+        @Dependency("PlaceholderAPI")
+    }
+)
+```
+
+Let's make it required:
+
+```java
+@Plugin(
+    name = "example",
+    description = "An example plugin that adds example features.",
+    dependencies = {
+        @Dependency("PlaceholderAPI", required = true)
+    }
+)
+```

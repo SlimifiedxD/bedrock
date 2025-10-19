@@ -1,0 +1,27 @@
+---
+title: Development Environment
+sidebar:
+  order: 2
+---
+
+**Bedrock** uses [Jitpack](https://jitpack.io/) as its repository.
+Below is all you need to get it running:
+
+```kt
+repositories {
+  mavenCentral()
+  maven {
+    name = "papermc"
+    url = uri("https://repo.papermc.io/repository/maven-public/")
+  }
+  maven("https://jitpack.io")
+}
+
+dependencies {
+    implementation("com.github.SlimifiedxD:bedrock:1.0-SNAPSHOT")
+    annotationProcessor("com.github.SlimifiedxD:bedrock:1.0-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.9-R0.1-SNAPSHOT")
+}
+```
+
+Just like that, you're ready for plugin development with **Bedrock**.
