@@ -1,11 +1,8 @@
 package org.slimecraft.bedrock.internal;
 
-import com.sun.jdi.ClassType;
-import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
-import io.papermc.paper.plugin.loader.PluginLoader;
 import org.slimecraft.bedrock.dependency.LoadOrder;
 import org.slimecraft.bedrock.dependency.LoadStage;
-import org.slimecraft.bedrock.annotation.PluginConfig;
+import org.slimecraft.bedrock.annotation.Plugin;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -26,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This class processes annotations for {@link PluginConfig}s. This is not meant to be used by end users.
+ * This class processes annotations for {@link Plugin}s. This is not meant to be used by end users.
  */
 @SupportedAnnotationTypes("org.slimecraft.bedrock.annotation.PluginConfig")
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
@@ -38,7 +35,7 @@ public class PluginConfigProcessor extends AbstractProcessor {
                 final Filer filer = processingEnv.getFiler();
                 for (AnnotationMirror mirror : element.getAnnotationMirrors()) {
                     try {
-                        if (!mirror.getAnnotationType().toString().equals(PluginConfig.class.getCanonicalName()))
+                        if (!mirror.getAnnotationType().toString().equals(Plugin.class.getCanonicalName()))
                             continue;
                         final Map<? extends ExecutableElement, ? extends AnnotationValue> values = mirror.getElementValues();
                         final Map<String, Object> data = new LinkedHashMap<>();
