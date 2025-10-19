@@ -25,7 +25,6 @@ import java.util.Set;
 /**
  * This class processes annotations for {@link Plugin}s. This is not meant to be used by end users.
  */
-@SupportedAnnotationTypes("org.slimecraft.bedrock.annotation.Plugin")
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
 public class PluginConfigProcessor extends AbstractProcessor {
     @Override
@@ -173,5 +172,10 @@ public class PluginConfigProcessor extends AbstractProcessor {
             }
         }
         return true;
+    }
+
+    @Override
+    public Set<String> getSupportedAnnotationTypes() {
+        return Set.of(Plugin.class.getName());
     }
 }
