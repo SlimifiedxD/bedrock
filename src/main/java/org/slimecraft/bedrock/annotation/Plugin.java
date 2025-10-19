@@ -23,7 +23,7 @@ public @interface Plugin {
     /**
      * The name of the plugin, used for end users and {@link Dependency}s.
      */
-    String name();
+    String value();
 
     /**
      * The description of the plugin.

@@ -10,7 +10,7 @@ public @interface Dependency {
     /**
      * The name of the dependency.
      */
-    String name();
+    String value();
 
     /**
      * The {@link LoadStage} in which a dependency should be loaded.

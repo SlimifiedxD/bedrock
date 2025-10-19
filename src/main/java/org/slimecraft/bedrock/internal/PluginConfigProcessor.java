@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * This class processes annotations for {@link Plugin}s. This is not meant to be used by end users.
  */
-@SupportedAnnotationTypes("org.slimecraft.bedrock.annotation.PluginConfig")
+@SupportedAnnotationTypes("org.slimecraft.bedrock.annotation.Plugin")
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
 public class PluginConfigProcessor extends AbstractProcessor {
     @Override
@@ -91,7 +91,7 @@ public class PluginConfigProcessor extends AbstractProcessor {
                                                 : depMethod.getDefaultValue() != null ? depMethod.getDefaultValue().getValue() : null;
 
                                         switch (key) {
-                                            case "name" -> name = (String) entryValue;
+                                            case "value" -> name = (String) entryValue;
                                             case "loadOrder" -> {
                                                 final VariableElement enumConst = (VariableElement) entryValue;
                                                 loadOrder = LoadOrder.valueOf(enumConst.getSimpleName().toString());
@@ -124,6 +124,9 @@ public class PluginConfigProcessor extends AbstractProcessor {
                                 final TypeMirror typeMirror = declaredType.asElement().asType();
                                 if (typeUtils.isSameType(typeMirror, bootstrapType) || typeUtils.isSameType(typeMirror, pluginLoaderType)) continue;
                                 data.put(paramName, typeElementValue.getQualifiedName().toString());
+                                continue;
+                            } else if (paramName.equals("value")) {
+                                data.put("name", paramValue);
                                 continue;
                             }
                             data.put(paramName, paramValue);
