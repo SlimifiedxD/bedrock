@@ -49,6 +49,10 @@ public final class EventNode {
         this.children.add(child);
     }
 
+    public void attachTo(EventNode parent) {
+        parent.addChild(this);
+    }
+
     public Key getIdentifier() {
         return identifier;
     }

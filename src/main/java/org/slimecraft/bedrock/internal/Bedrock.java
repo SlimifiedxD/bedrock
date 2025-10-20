@@ -3,13 +3,20 @@ package org.slimecraft.bedrock.internal;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
+import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
+import org.slimecraft.bedrock.event.EventNode;
 import org.slimecraft.bedrock.event.Events;
+import org.slimecraft.bedrock.menu.Menu;
 import org.slimecraft.bedrock.util.FastBoardHelper;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * The main class for bedrock. {@link Bedrock#init(Plugin)} initializes Bedrock and allows the rest of the library to use
@@ -17,6 +24,8 @@ import org.slimecraft.bedrock.util.FastBoardHelper;
  * This class should not be touched by end-users.
  */
 public final class Bedrock {
+    public static final EventNode BEDROCK_NODE = new EventNode(Key.key("slimecraft", "bedrock"));
+
     static {
         try {
             Class.forName("org.slimecraft.bedrock.generated.GeneratedBedrockInit");
@@ -37,7 +46,9 @@ public final class Bedrock {
             return;
         }
         Bedrock.plugin = plugin;
+        BEDROCK_NODE.attachTo(EventNode.global());
         FastBoardHelper.init();
+        MenuManager.init();
         try (final ScanResult scanResult = new ClassGraph()
                 .enableClassInfo()
                 .scan()) {
