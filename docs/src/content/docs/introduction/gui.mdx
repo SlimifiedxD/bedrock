@@ -46,3 +46,95 @@ menu.show(player);
 Great. Now, time to go through some necessary definitions:
 
 > **Context**: An object that is created when an action occurs in a menu.
+
+> **State**: Something that can change in a `Menu`.
+
+Let's create a simple toggle button:
+
+```java
+final Menu invMenu = Menu.Inventory
+        .two()
+        .name(Component.empty())
+        .state(
+                State.state("clicked", false)
+        )
+        .button(Button.builder()
+                .item(ItemStack.of(Material.RED_WOOL))
+                .slot(3)
+                .leftClicked(ctx -> {
+                    final Menu menu = ctx.menu();
+                    final State<Boolean> clicked = menu.getState("clicked");
+
+                    clicked.setValue(!clicked.getValue());
+                    ctx.button().setItem(
+                            clicked.getValue()
+                                    ? ItemStack.of(Material.LIME_WOOL)
+                                    : ItemStack.of(Material.RED_WOOL)
+                    );
+                }))
+        .build();
+```
+
+As you can see, `State` is not type-safe. If you value type-safety over brevity, you can simply extend
+one of the `Menu` classes in order to keep type safety. Let's created the same thing, but type-safe:
+
+```java
+public class TypeSafeMenu extends InventoryMenu {
+
+    public TypeSafeMenu(Component name) {
+        super(MenuType.GENERIC_3X3, name);
+
+        final State<Boolean> clicked = State.state("clicked", false);
+        this.addState(clicked);
+
+        this.addButton(
+                Button.builder()
+                        .item(ItemStack.of(Material.RED_WOOL))
+                        .slot(3)
+                        .leftClicked(ctx -> {
+
+                            clicked.setValue(!clicked.getValue());
+                            ctx.button().setItem(
+                                    clicked.getValue()
+                                            ? ItemStack.of(Material.LIME_WOOL)
+                                            : ItemStack.of(Material.RED_WOOL)
+                            );
+                        })
+                        .build()
+        );
+    }
+}
+```
+
+As a matter of fact, you don't even need `State` when you are in the constructor. You can simply
+use variables, like this:
+
+```java
+public class TypeSafeMenu extends InventoryMenu {
+
+    public TypeSafeMenu(Component name) {
+        super(MenuType.GENERIC_3X3, name);
+
+        boolean[] clicked = { false };
+
+        this.addButton(
+                Button.builder()
+                        .item(ItemStack.of(Material.RED_WOOL))
+                        .slot(3)
+                        .leftClicked(ctx -> {
+                            clicked[0] = !clicked[0];
+
+                            ctx.button().setItem(
+                                    clicked[0]
+                                            ? ItemStack.of(Material.LIME_WOOL)
+                                            : ItemStack.of(Material.RED_WOOL)
+                            );
+                        })
+                        .build()
+        );
+    }
+}
+```
+
+We use an array with the variable since variables used in lambdas must be effectively final.
+Alternatively, you can manually construct a `Button` and use setters.

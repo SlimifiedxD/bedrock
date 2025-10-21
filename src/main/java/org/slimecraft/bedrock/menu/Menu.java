@@ -94,7 +94,9 @@ public class Menu {
     }
 
     public <T> State<T> getState(String name) {
-        return (State<T>) states.stream().filter(state -> state.getName().equals(name)).findFirst().orElseThrow();
+        return (State<T>) states.stream().filter(state -> state.getName().equals(name)).findFirst().orElseThrow(() -> {
+            return new IllegalArgumentException("No state of name: '" + name + "' exists. Valid states are: " + states.toString() + ".");
+        });
     }
 
     public List<State<?>> getStates() {
