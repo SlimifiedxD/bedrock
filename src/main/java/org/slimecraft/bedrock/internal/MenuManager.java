@@ -62,7 +62,7 @@ public class MenuManager {
                         if (renameText == null) return;
                         ANVIL_TEXT.put(id, renameText);
                         text = renameText;
-                        final AnvilTextContext context = new AnvilTextContext(player, text);
+                        final AnvilTextContext context = new AnvilTextContext(menu, player, text);
                         anvilMenu.getWhenTextChanged().get().accept(context);
                     }
                 });
@@ -92,18 +92,27 @@ public class MenuManager {
                     }
                     final Menu menu = MENUS.get(id);
 
-                    final ClickContext context = new ClickContext(event);
-                    menu.getButtons().forEach(button -> {
-                        if (event.getRawSlot() != button.getSlot()) return;
-                        button.getWhenLeftClicked().ifPresent(consumer -> {
-                            if (!event.getClick().isLeftClick()) return;
-                            consumer.accept(context);
-                        });
-                        button.getWhenRightClicked().ifPresent(consumer -> {
-                            if (!event.getClick().isRightClick()) return;
-                            consumer.accept(context);
-                        });
-                    });
+                    refreshButtons(event, menu);
                 });
+    }
+
+    private static void refreshButtons(InventoryClickEvent event, Menu menu) {
+        menu.getButtons().forEach(button -> {
+            if (event.getRawSlot() != button.getSlot()) return;
+            if (!button.isMoveable()) event.setCancelled(true);
+            final ClickContext context = new ClickContext(menu, event, button);
+            final Button before = new Button(button.getItem(), button.getSlot(), button.getWhenLeftClicked().orElse(null), button.getWhenRightClicked().orElse(null), button.isMoveable());
+            button.getWhenLeftClicked().ifPresent(consumer -> {
+                if (!event.getClick().isLeftClick()) return;
+                consumer.accept(context);
+            });
+            button.getWhenRightClicked().ifPresent(consumer -> {
+                if (!event.getClick().isRightClick()) return;
+                consumer.accept(context);
+            });
+            if (!before.equals(button)) {
+                menu.getView().setItem(button.getSlot(), button.getItem());
+            }
+        });
     }
 }

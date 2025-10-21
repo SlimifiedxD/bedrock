@@ -10,5 +10,7 @@ public interface OptionalBuilder {
 
     OptionalBuilder rightClicked(Consumer<ClickContext> rightClicked);
 
+    OptionalBuilder moveable();
+
     Button build();
 }

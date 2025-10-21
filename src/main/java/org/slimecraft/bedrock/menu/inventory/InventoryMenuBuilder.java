@@ -9,6 +9,9 @@ import org.slimecraft.bedrock.menu.builder.NameBuilder;
 import org.slimecraft.bedrock.menu.builder.OptionalBuilder;
 import org.slimecraft.bedrock.menu.builder.TypeBuilder;
 import org.slimecraft.bedrock.menu.button.Button;
+import org.slimecraft.bedrock.menu.state.State;
+
+import java.util.List;
 
 public class InventoryMenuBuilder<T extends MenuType.Typed<@NotNull InventoryView, ? extends @NotNull InventoryViewBuilder<@NotNull InventoryView>>>
         implements
@@ -45,6 +48,12 @@ public class InventoryMenuBuilder<T extends MenuType.Typed<@NotNull InventoryVie
     @Override
     public InventoryMenuBuilder<T> notCloseable() {
         menu.setCloseable(false);
+        return this;
+    }
+
+    @Override
+    public InventoryMenuBuilder<T> state(State<?>... states) {
+        menu.setStates(List.of(states));
         return this;
     }
 

@@ -1,12 +1,13 @@
 package org.slimecraft.bedrock.menu.context;
 
 import org.bukkit.entity.Player;
+import org.slimecraft.bedrock.menu.Menu;
 
 public class AnvilTextContext extends PlayerContext {
     private final String text;
 
-    public AnvilTextContext(Player player, String text) {
-        super(player);
+    public AnvilTextContext(Menu menu, Player player, String text) {
+        super(menu, player);
         this.text = text;
     }
 

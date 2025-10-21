@@ -5,15 +5,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.bukkit.inventory.view.builder.InventoryViewBuilder;
-import org.bukkit.inventory.view.builder.LocationInventoryViewBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.slimecraft.bedrock.internal.MenuManager;
 import org.slimecraft.bedrock.menu.anvil.AnvilMenuBuilder;
 import org.slimecraft.bedrock.menu.anvil.OptionalAnvilBuilder;
 import org.slimecraft.bedrock.menu.builder.NameBuilder;
-import org.slimecraft.bedrock.menu.builder.TypeBuilder;
 import org.slimecraft.bedrock.menu.button.Button;
 import org.slimecraft.bedrock.menu.inventory.InventoryMenuBuilder;
+import org.slimecraft.bedrock.menu.state.State;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +24,7 @@ public class Menu {
     private final List<Button> buttons = new ArrayList<>();
     private InventoryView view;
     private boolean closeable = true;
+    private List<State<?>> states = new ArrayList<>();
 
     protected Menu(MenuType type, Component name) {
         this.type = type;
@@ -91,5 +91,17 @@ public class Menu {
 
     public void setCloseable(boolean closeable) {
         this.closeable = closeable;
+    }
+
+    public <T> State<T> getState(String name) {
+        return (State<T>) states.stream().filter(state -> state.getName().equals(name)).findFirst().orElseThrow();
+    }
+
+    public List<State<?>> getStates() {
+        return states;
+    }
+
+    public void setStates(List<State<?>> states) {
+        this.states = states;
     }
 }

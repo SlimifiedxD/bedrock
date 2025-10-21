@@ -39,6 +39,12 @@ public class ButtonBuilder implements ItemBuilder, SlotBuilder, OptionalBuilder 
     }
 
     @Override
+    public OptionalBuilder moveable() {
+        button.setMoveable(true);
+        return this;
+    }
+
+    @Override
     public Button build() {
         return button;
     }

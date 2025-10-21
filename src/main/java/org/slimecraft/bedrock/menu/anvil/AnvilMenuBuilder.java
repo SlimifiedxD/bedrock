@@ -5,7 +5,9 @@ import org.slimecraft.bedrock.menu.builder.NameBuilder;
 import org.slimecraft.bedrock.menu.button.Button;
 import org.slimecraft.bedrock.menu.button.builder.OptionalBuilder;
 import org.slimecraft.bedrock.menu.context.AnvilTextContext;
+import org.slimecraft.bedrock.menu.state.State;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public class AnvilMenuBuilder implements NameBuilder<OptionalAnvilBuilder>, OptionalAnvilBuilder {
@@ -32,6 +34,12 @@ public class AnvilMenuBuilder implements NameBuilder<OptionalAnvilBuilder>, Opti
     @Override
     public OptionalAnvilBuilder notCloseable() {
         menu.setCloseable(false);
+        return this;
+    }
+
+    @Override
+    public OptionalAnvilBuilder state(State<?>... states) {
+        menu.setStates(List.of(states));
         return this;
     }
 
