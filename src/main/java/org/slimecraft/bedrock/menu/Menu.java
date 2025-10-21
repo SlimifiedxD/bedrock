@@ -24,6 +24,7 @@ public class Menu {
     private final Component name;
     private final List<Button> buttons = new ArrayList<>();
     private InventoryView view;
+    private boolean closeable = true;
 
     protected Menu(MenuType type, Component name) {
         this.type = type;
@@ -82,5 +83,13 @@ public class Menu {
 
     public InventoryView getView() {
         return view;
+    }
+
+    public boolean isCloseable() {
+        return closeable;
+    }
+
+    public void setCloseable(boolean closeable) {
+        this.closeable = closeable;
     }
 }

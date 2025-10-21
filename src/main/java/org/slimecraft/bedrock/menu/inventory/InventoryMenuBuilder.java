@@ -43,6 +43,12 @@ public class InventoryMenuBuilder<T extends MenuType.Typed<@NotNull InventoryVie
     }
 
     @Override
+    public InventoryMenuBuilder<T> notCloseable() {
+        menu.setCloseable(false);
+        return this;
+    }
+
+    @Override
     public InventoryMenu build() {
         return menu;
     }

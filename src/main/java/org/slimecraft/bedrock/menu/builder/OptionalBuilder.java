@@ -8,5 +8,7 @@ public interface OptionalBuilder<S extends OptionalBuilder<S, M>, M extends Menu
 
     S button(org.slimecraft.bedrock.menu.button.builder.OptionalBuilder builder);
 
+    S notCloseable();
+
     M build();
 }

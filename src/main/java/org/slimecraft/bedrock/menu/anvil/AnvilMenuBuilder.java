@@ -30,6 +30,12 @@ public class AnvilMenuBuilder implements NameBuilder<OptionalAnvilBuilder>, Opti
     }
 
     @Override
+    public OptionalAnvilBuilder notCloseable() {
+        menu.setCloseable(false);
+        return this;
+    }
+
+    @Override
     public OptionalAnvilBuilder whenTextChanged(Consumer<AnvilTextContext> whenTextChanged) {
         menu.setWhenTextChanged(whenTextChanged);
         return this;

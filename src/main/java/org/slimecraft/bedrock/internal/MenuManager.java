@@ -12,6 +12,7 @@ import org.slimecraft.bedrock.menu.anvil.AnvilMenu;
 import org.slimecraft.bedrock.menu.button.Button;
 import org.slimecraft.bedrock.menu.context.AnvilTextContext;
 import org.slimecraft.bedrock.menu.context.ClickContext;
+import org.slimecraft.bedrock.task.Task;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,28 +44,28 @@ public class MenuManager {
                 });
 
         Bedrock.BEDROCK_NODE
-                        .addListener(PrepareAnvilEvent.class, event -> {
-                            final AnvilView view = event.getView();
-                            final Player player = (Player) view.getPlayer();
-                            final UUID id = player.getUniqueId();
-                            if (!MENUS.containsKey(id)) {
-                                return;
-                            }
-                            final Menu menu = MENUS.get(id);
-                            if (!(menu instanceof final AnvilMenu anvilMenu)) return;
-                            view.setRepairCost(0);
-                            if (anvilMenu.getWhenTextChanged().isEmpty()) return;
+                .addListener(PrepareAnvilEvent.class, event -> {
+                    final AnvilView view = event.getView();
+                    final Player player = (Player) view.getPlayer();
+                    final UUID id = player.getUniqueId();
+                    if (!MENUS.containsKey(id)) {
+                        return;
+                    }
+                    final Menu menu = MENUS.get(id);
+                    if (!(menu instanceof final AnvilMenu anvilMenu)) return;
+                    view.setRepairCost(0);
+                    if (anvilMenu.getWhenTextChanged().isEmpty()) return;
 
-                            String text = ANVIL_TEXT.get(id);
-                            final String renameText = view.getRenameText();
-                            if (text == null || !text.equals(renameText)) {
-                                if (renameText == null) return;
-                                ANVIL_TEXT.put(id, renameText);
-                                text = renameText;
-                                final AnvilTextContext context = new AnvilTextContext(player, text);
-                                anvilMenu.getWhenTextChanged().get().accept(context);
-                            }
-                        });
+                    String text = ANVIL_TEXT.get(id);
+                    final String renameText = view.getRenameText();
+                    if (text == null || !text.equals(renameText)) {
+                        if (renameText == null) return;
+                        ANVIL_TEXT.put(id, renameText);
+                        text = renameText;
+                        final AnvilTextContext context = new AnvilTextContext(player, text);
+                        anvilMenu.getWhenTextChanged().get().accept(context);
+                    }
+                });
 
         Bedrock.BEDROCK_NODE
                 .addListener(InventoryCloseEvent.class, event -> {
@@ -72,7 +73,14 @@ public class MenuManager {
                     if (!MENUS.containsKey(id)) {
                         return;
                     }
+                    final Menu menu = MENUS.get(id);
                     MENUS.remove(id);
+                    if (menu.isCloseable()) return;
+                    if (event.getReason() != InventoryCloseEvent.Reason.PLAYER) return;
+                    Task.builder()
+                            .whenRan(task -> {
+                                menu.show((Player) event.getPlayer());
+                            }).run();
                 });
 
         Bedrock.BEDROCK_NODE
