@@ -14,6 +14,7 @@ import org.slimecraft.bedrock.event.Events;
 import org.slimecraft.bedrock.menu.Menu;
 import org.slimecraft.bedrock.util.FastBoardHelper;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -33,6 +34,7 @@ public final class Bedrock {
             ignored.printStackTrace();
         }
     }
+
     private static Plugin plugin;
 
     private Bedrock() {
@@ -65,7 +67,8 @@ public final class Bedrock {
                     continue; // want to be able to use player configuration events so skip this unsupported hack event
                 }
                 try {
-                    clazz.getMethod("getHandlerList");
+                    final Method method = clazz.getMethod("getHandlerList");
+                    if (method.getDeclaringClass() != clazz) continue;
                     Bukkit.getServer().getPluginManager().registerEvent(clazz,
                             bukkitListener,
                             EventPriority.HIGHEST,
@@ -80,6 +83,7 @@ public final class Bedrock {
 
     /**
      * Get the plugin that Bedrock is using internally.
+     *
      * @throws IllegalStateException When Bedrock has not been initialized.
      */
     public static Plugin getPlugin() {
