@@ -6,6 +6,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.view.AnvilView;
+import org.jetbrains.annotations.ApiStatus;
 import org.slimecraft.bedrock.menu.Menu;
 import org.slimecraft.bedrock.menu.anvil.AnvilMenu;
 import org.slimecraft.bedrock.menu.button.Button;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@ApiStatus.Internal
 public class MenuManager {
     public static final Map<UUID, Menu> MENUS = new HashMap<>();
     /**

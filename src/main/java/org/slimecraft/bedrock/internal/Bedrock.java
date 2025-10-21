@@ -9,6 +9,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.ApiStatus;
 import org.slimecraft.bedrock.event.EventNode;
 import org.slimecraft.bedrock.event.Events;
 import org.slimecraft.bedrock.menu.Menu;
@@ -24,6 +25,7 @@ import java.util.UUID;
  * the functionality it provides.
  * This class should not be touched by end-users.
  */
+@ApiStatus.Internal
 public final class Bedrock {
     public static final EventNode BEDROCK_NODE = new EventNode(Key.key("slimecraft", "bedrock"));
 

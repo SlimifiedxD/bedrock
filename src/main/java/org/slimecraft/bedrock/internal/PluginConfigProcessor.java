@@ -1,5 +1,6 @@
 package org.slimecraft.bedrock.internal;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.slimecraft.bedrock.dependency.LoadOrder;
 import org.slimecraft.bedrock.dependency.LoadStage;
 import org.slimecraft.bedrock.annotation.Plugin;
@@ -25,6 +26,7 @@ import java.util.Set;
 /**
  * This class processes annotations for {@link Plugin}s. This is not meant to be used by end users.
  */
+@ApiStatus.Internal
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
 public class PluginConfigProcessor extends AbstractProcessor {
     @Override
