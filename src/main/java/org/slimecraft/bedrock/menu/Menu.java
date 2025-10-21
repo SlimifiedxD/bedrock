@@ -101,6 +101,10 @@ public class Menu {
         return states;
     }
 
+    public void addState(State<?> state) {
+        states.add(state);
+    }
+
     public void setStates(List<State<?>> states) {
         this.states = states;
     }

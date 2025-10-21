@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slimecraft.bedrock.menu.Menu;
 
 public class InventoryMenu extends Menu {
-    <T extends MenuType.Typed<@NotNull InventoryView, ? extends @NotNull InventoryViewBuilder<@NotNull InventoryView>>>
+    public <T extends MenuType.Typed<@NotNull InventoryView, ? extends @NotNull InventoryViewBuilder<@NotNull InventoryView>>>
     InventoryMenu(T type, Component name) {
         super(type, name);
     }
