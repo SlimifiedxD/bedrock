@@ -1,0 +1,48 @@
+---
+title: GUI
+---
+
+A GUI (pronounced _gooey_) is one of the most important parts of the user experience
+for people using your plugin. Whether it be server administrators or players,
+GUI's are much more user friendly than commands.
+
+Since GUI's are so vital, **Bedrock** provides first-class support for all types of GUI's.
+Let's make a GUI together:
+
+```java
+Menu menu = Menu.Inventory
+                .two()
+                .name(Component.empty())
+                .button(Button.builder()
+                        .item(ItemStack.of(Material.LIME_WOOL))
+                        .slot(3)
+                        .leftClicked(ctx -> {
+                            ctx.player().sendMessage("left click");
+                        }))
+                .build();
+
+```
+
+> A Menu is a wrapper over traditional GUI's that is the foundation of Bedrock's approach to user interfaces.
+
+In the above code, we created a relatively simple menu, though it can be a little hard to read at first glance;
+let's break it down step by step:
+
+- `Menu.Inventory.two()` creates a generic **menu _builder_** that is 2 rows long.
+- `.name(Component.empty())` is the name of the menu. Menus must always have a name, and the
+  builder takes in a `Component`, which in this case, is empty.
+- `.button()` lets us add a button to the menu, either with a `Button` or a `ButtonBuilder`. The
+  button builder is self-explanatory, and should not need clarification.<br/>
+- `.build()` builds the `MenuBuilder` into a `Menu`, which can be shown to players using the
+  `show(Player)` method.
+
+Let's show this menu to a player:
+
+```java
+Player player = // some reference to a player....
+menu.show(player);
+```
+
+Great. Now, time to go through some necessary definitions:
+
+> **Context**: An object that is created when an action occurs in a menu.

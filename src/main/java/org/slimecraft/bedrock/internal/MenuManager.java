@@ -1,6 +1,7 @@
 package org.slimecraft.bedrock.internal;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
@@ -9,6 +10,7 @@ import org.slimecraft.bedrock.menu.Menu;
 import org.slimecraft.bedrock.menu.anvil.AnvilMenu;
 import org.slimecraft.bedrock.menu.button.Button;
 import org.slimecraft.bedrock.menu.context.AnvilTextContext;
+import org.slimecraft.bedrock.menu.context.ClickContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,6 +71,29 @@ public class MenuManager {
                         return;
                     }
                     MENUS.remove(id);
+                });
+
+        Bedrock.BEDROCK_NODE
+                .addListener(InventoryClickEvent.class, event -> {
+                    final Player player = (Player) event.getWhoClicked();
+                    final UUID id = player.getUniqueId();
+                    if (!MENUS.containsKey(id)) {
+                        return;
+                    }
+                    final Menu menu = MENUS.get(id);
+
+                    final ClickContext context = new ClickContext(event);
+                    menu.getButtons().forEach(button -> {
+                        if (event.getRawSlot() != button.getSlot()) return;
+                        button.getWhenLeftClicked().ifPresent(consumer -> {
+                            if (!event.getClick().isLeftClick()) return;
+                            consumer.accept(context);
+                        });
+                        button.getWhenRightClicked().ifPresent(consumer -> {
+                            if (!event.getClick().isRightClick()) return;
+                            consumer.accept(context);
+                        });
+                    });
                 });
     }
 }

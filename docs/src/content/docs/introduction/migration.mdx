@@ -1,0 +1,88 @@
+---
+title: Migration
+---
+
+We're glad that you're deciding to migrate from Paper to **Bedrock**. The migration should be
+relatively simple. With that being said, let's do this!
+
+This is the order in which you will be migrating features:
+
+- Plugin Declaration
+- Listeners
+- Commands
+- GUI's
+- Tasks
+
+Let's do the first step in the migration process: using the `@Plugin` annotation.<br/>
+Say we have a `paper-plugin.yml` like this:
+
+```yml
+name: MigrationPlugin
+version: "1.0"
+main: foo.bar.baz.MigrationPlugin
+description: A dummy plugin that does not actually exist.
+api-version: "1.21.10"
+bootstrapper: foo.bar.baz.MigrationPluginBootstrap
+loader: foo.bar.baz.MigrationPluginLoader
+```
+
+On your class that extends `JavaPlugin`, in this case, `MigrationPlugin`, annotate it with `@Plugin`:
+
+```java
+@Plugin(
+        value = "migration",
+        description = "A dummy plugin that does not actually exist.",
+        apiVersion = "1.21.10",
+        version = "1.0",
+        bootstrapper = MigrationPluginBootstrap.class,
+        loader = MigrationPluginLoader.class
+)
+public class MigrationPlugin extends JavaPlugin {
+
+}
+```
+
+Now, you can delete your `paper-plugin.yml` from your `src/main/resources` directory.
+
+Second, if you have any classes that implement Bukkit's listener (`org.bukkit.event.Listener`), those should
+be migrated first.
+
+Say we have a listener like this:
+
+```java
+public class Listeners implements Listener {
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        // ...
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        // ...
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        // ...
+    }
+}
+```
+
+And we register it like this:
+
+```java
+@Plugin(
+        value = "migration",
+        description = "A dummy plugin that does not actually exist.",
+        apiVersion = "1.21.10",
+        version = "1.0",
+        bootstrapper = MigrationPluginBootstrap.class,
+        loader = MigrationPluginLoader.class
+)
+public class MigrationPlugin extends JavaPlugin {
+    @Override
+    public void onEnable() {
+        getServer().getPluginManager().registerEvents(new Listeners());
+    }
+}
+```

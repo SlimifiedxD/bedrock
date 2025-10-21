@@ -1,4 +1,7 @@
 package org.slimecraft.bedrock.menu.builder;
 
-public interface TypeBuilder {
+import org.bukkit.inventory.MenuType;
+
+public interface TypeBuilder<N extends NameBuilder<?>, T extends MenuType> {
+    N type(T type);
 }
