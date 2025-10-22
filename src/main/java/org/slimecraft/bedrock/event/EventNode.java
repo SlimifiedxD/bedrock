@@ -1,6 +1,7 @@
 package org.slimecraft.bedrock.event;
 
 import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -33,12 +34,23 @@ public final class EventNode {
         listeners.add(listener);
     }
 
+    /**
+     * Use {@link EventListener#builder(Class)} instead.
+     */
+    @ApiStatus.Obsolete
     public <T> void addListener(Class<T> eventType, Consumer<T> action) {
-        this.addListener(new EventListener<>(eventType, action));
+        final EventListener<T> listener = new EventListener<>(eventType);
+        listener.addHandler(action);
     }
 
-    public <T> void addListener(Class<T> eventType, Consumer<T> action, Predicate<T> predicate) {
-        this.addListener(new EventListener<>(eventType, action, predicate));
+    /**
+     * Use {@link EventListener#builder(Class)} instead.
+     */
+    @ApiStatus.Obsolete
+    public <T> void addListener(Class<T> eventType, Consumer<T> action, Predicate<T> filter) {
+        final EventListener<T> listener = new EventListener<>(eventType);
+        listener.addHandler(action);
+        listener.addFilter(filter);
     }
 
     public <T> void addListener(EventListenerBuilder<T> builder) {

@@ -2,38 +2,28 @@ package org.slimecraft.bedrock.event;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public final class EventListenerBuilder<T>
         implements
-        HandlerBuilder<T, EventListenerBuilder<T>>,
         OptionalBuilder<T, EventListenerBuilder<T>>
 {
-    private EventListener<T> listener;
-    private Class<T> eventClass;
-    private Consumer<T> handler;
-
-    private List<Predicate<T>> filters;
+    private final EventListener<T> listener;
 
     EventListenerBuilder(Class<T> eventClass) {
-        this.eventClass = eventClass;
+        this.listener = new EventListener<>(eventClass);
     }
 
     @Override
     public EventListenerBuilder<T> handler(Consumer<T> handler) {
-        this.handler = handler;
-        this.listener = new EventListener<>(eventClass, handler);
+        listener.addHandler(handler);
         return this;
     }
 
     @Override
     public EventListenerBuilder<T> filter(Predicate<T> filter) {
-        Predicate<T> finalPredicate = filter;
-        for (final var existingFilter : filters) {
-            finalPredicate = finalPredicate.and(existingFilter);
-        }
-        filters.add(filter);
-        listener.setFilter(finalPredicate);
+        listener.addFilter(filter);
         return this;
     }
 

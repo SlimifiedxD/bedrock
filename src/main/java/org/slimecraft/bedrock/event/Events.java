@@ -33,13 +33,16 @@ public final class Events {
             if (!listener.getEventType().isAssignableFrom(event.getClass())) {
                 return;
             }
-            final Optional<Predicate<T>> optFilter = listener.getFilter().map(p -> (Predicate<T>) p);
-            if (optFilter.isPresent()) {
-                if (!optFilter.get().test(event)) {
+            for (var filter : listener.getFilters()) {
+                final Predicate<T> typedFilter = (Predicate<T>) filter;
+                if (!typedFilter.test(event)) {
                     return;
                 }
             }
-            ((Consumer<T>) listener.getAction()).accept(event);
+            for (var handler : listener.getHandlers()) {
+                final Consumer<T> typedHandler = (Consumer<T>) handler;
+                typedHandler.accept(event);
+            }
         });
     }
 }

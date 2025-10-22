@@ -1,41 +1,42 @@
 package org.slimecraft.bedrock.event;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public final class EventListener<T> {
     private final Class<T> eventType;
-    private final Consumer<T> action;
-    private Predicate<T> filter;
+    private final List<Consumer<T>> handlers = new ArrayList<>();
+    private final List<Predicate<T>> filters = new ArrayList<>();
 
-    EventListener(Class<T> eventType, Consumer<T> action) {
+    EventListener(Class<T> eventType) {
         this.eventType = eventType;
-        this.action = action;
     }
 
-    EventListener(Class<T> eventType, Consumer<T> action, Predicate<T> filter) {
-        this(eventType, action);
-        this.filter = filter;
-    }
-
-    public static <T> HandlerBuilder<T, EventListenerBuilder<T>> builder(Class<T> clazz) {
+    public static <T> EventListenerBuilder<T> builder(Class<T> clazz) {
         return new EventListenerBuilder<>(clazz);
+    }
+
+    public void addHandler(Consumer<T> handler) {
+        handlers.add(handler);
+    }
+
+    public void addFilter(Predicate<T> filter) {
+        filters.add(filter);
     }
 
     public Class<T> getEventType() {
         return eventType;
     }
 
-    public Consumer<T> getAction() {
-        return action;
+    public List<Consumer<T>> getHandlers() {
+        return handlers;
     }
 
-    public Optional<Predicate<T>> getFilter() {
-        return Optional.ofNullable(filter);
-    }
-
-    public void setFilter(Predicate<T> filter) {
-        this.filter = filter;
+    public List<Predicate<T>> getFilters() {
+        return filters;
     }
 }
