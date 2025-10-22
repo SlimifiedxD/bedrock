@@ -1,8 +1,2 @@
 jdk:
   - openjdk21
-
-install:
-  - ../gradlew -v
-
-build:
-  - ../gradlew -p . clean build publishToMavenLocal
