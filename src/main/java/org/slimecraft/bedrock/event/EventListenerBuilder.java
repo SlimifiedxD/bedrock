@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 
 public final class EventListenerBuilder<T>
         implements
-        TypeBuilder<T, EventListenerBuilder<T>>,
         HandlerBuilder<T, EventListenerBuilder<T>>,
         OptionalBuilder<T, EventListenerBuilder<T>>
 {
