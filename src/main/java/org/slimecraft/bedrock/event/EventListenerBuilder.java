@@ -21,6 +21,7 @@ public final class EventListenerBuilder<T>
         EventHandler<T> handler;
         if (previousFilter != null) {
             handler = new EventHandler<>(consumer, previousFilter);
+            previousFilter = null;
         } else {
             handler = new EventHandler<>(consumer);
         }
