@@ -16,7 +16,7 @@ public final class EventListener<T> {
         return new EventListenerBuilder<>(clazz);
     }
 
-    private void addHandler(EventHandler<T> handler) {
+    public void addHandler(EventHandler<T> handler) {
         this.handlers.add(handler);
     }
 

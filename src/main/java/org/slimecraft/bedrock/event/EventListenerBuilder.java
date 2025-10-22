@@ -10,20 +10,27 @@ public final class EventListenerBuilder<T>
         OptionalBuilder<T, EventListenerBuilder<T>>
 {
     private final EventListener<T> listener;
+    private Filter<T> previousFilter;
 
     EventListenerBuilder(Class<T> eventClass) {
         this.listener = new EventListener<>(eventClass);
     }
 
     @Override
-    public EventListenerBuilder<T> handler(Consumer<T> handler) {
+    public EventListenerBuilder<T> handler(Consumer<T> consumer) {
+        EventHandler<T> handler;
+        if (previousFilter != null) {
+            handler = new EventHandler<>(consumer, previousFilter);
+        } else {
+            handler = new EventHandler<>(consumer);
+        }
         listener.addHandler(handler);
         return this;
     }
 
     @Override
     public EventListenerBuilder<T> filter(Filter<T> filter) {
-        listener.addFilter(filter);
+        previousFilter = filter;
         return this;
     }
 
