@@ -16,6 +16,10 @@ public class Filter<T> {
         return new FilterBuilder<>(predicate);
     }
 
+    public Predicate<T> getPredicate() {
+        return predicate;
+    }
+
     public Optional<Consumer<T>> getOrElse() {
         return Optional.ofNullable(orElse);
     }

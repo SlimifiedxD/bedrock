@@ -49,8 +49,7 @@ public final class EventNode {
     @ApiStatus.Obsolete
     public <T> void addListener(Class<T> eventType, Consumer<T> action, Predicate<T> predicate) {
         final EventListener<T> listener = new EventListener<>(eventType);
-        listener.addHandler(action);
-        listener.addFilter(Filter.of(predicate));
+        listener.addHandler(action, Filter.of(predicate));
     }
 
     public <T> void addListener(EventListenerBuilder<T> builder) {
