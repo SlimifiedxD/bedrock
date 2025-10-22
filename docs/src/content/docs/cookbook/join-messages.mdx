@@ -2,3 +2,39 @@
 title: Join Messages
 ---
 
+```java
+@Plugin("join-messages")
+public class JoinMessagesPlugin extends JavaPlugin {
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    
+    @Override
+    public void onEnable() {
+        final Config config = ConfigLoader.load(Config.class, FileExtension.YML);
+        
+        EventNode.global()
+                .addListener(
+                        EventListener.of(PlayerJoinEvent.class)
+                                .handler(event -> {
+                                    final String joinText = config.joinText;
+                                    
+                                    if (joinText.isEmpty()) {
+                                        event.joinMessage(null);
+                                        return;
+                                    }
+                                    
+                                    event.joinMessage(MINI_MESSAGE.deserialize(
+                                            joinText,
+                                            TagResolver.resolver(
+                                                    "player",
+                                                    Tag.selfClosingInserting(event.getPlayer().displayName()))
+                                    ));
+                                })
+                );
+    }
+    
+    @Configuration("config")
+    private static final class Config {
+        public String joinText = "<yellow><player> joined the game</yellow>";
+    }
+}
+```
