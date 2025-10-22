@@ -31,19 +31,6 @@ public class MenuManager {
 
     public static void init() {
         Bedrock.BEDROCK_NODE
-                .addListener(InventoryOpenEvent.class, event -> {
-                    final UUID id = event.getPlayer().getUniqueId();
-                    if (!MENUS.containsKey(id)) {
-                        return;
-                    }
-                    final Menu menu = MENUS.get(id);
-
-                    for (Button button : menu.getButtons()) {
-                        menu.getView().setItem(button.getSlot(), button.getItem());
-                    }
-                });
-
-        Bedrock.BEDROCK_NODE
                 .addListener(PrepareAnvilEvent.class, event -> {
                     final AnvilView view = event.getView();
                     final Player player = (Player) view.getPlayer();

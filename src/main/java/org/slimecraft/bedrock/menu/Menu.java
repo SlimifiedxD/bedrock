@@ -33,8 +33,14 @@ public class Menu {
 
     public void show(Player player) {
         MenuManager.MENUS.put(player.getUniqueId(), this);
-        view = type.create(player, name);
-        player.openInventory(view);
+        this.view = type.create(player, name);
+
+        // Adding the actual buttons to the actual view
+        for (Button viewButton : buttons) {
+            this.view.setItem(viewButton.getSlot(), viewButton.getItem());
+        }
+
+        player.openInventory(this.view);
     }
 
     public void addButton(Button button) {
@@ -78,7 +84,7 @@ public class Menu {
     }
 
     public InventoryView getView() {
-        return view;
+        return this.view;
     }
 
     public boolean isCloseable() {
