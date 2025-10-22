@@ -19,8 +19,8 @@ public final class EventListener<T> {
         this.filter = filter;
     }
 
-    public static <T> EventListenerBuilder<T> builder(Class<T> type, Consumer<T> handler) {
-        return new EventListenerBuilder<>(type, handler);
+    public static <T> HandlerBuilder<T, EventListenerBuilder<T>> builder(Class<T> clazz) {
+        return new EventListenerBuilder<>(clazz);
     }
 
     public Class<T> getEventType() {
