@@ -47,28 +47,24 @@ public class Menu {
 
     public static class Inventory {
 
-        public static NameBuilder<InventoryMenuBuilder<MenuType.Typed<@NotNull InventoryView, ? extends @NotNull InventoryViewBuilder<@NotNull InventoryView>>>> one() {
-            return new InventoryMenuBuilder<>().type(MenuType.GENERIC_9X1);
-        }
-
-        public static NameBuilder<InventoryMenuBuilder<MenuType.Typed<@NotNull InventoryView, ? extends @NotNull InventoryViewBuilder<@NotNull InventoryView>>>> two() {
-            return new InventoryMenuBuilder<>().type(MenuType.GENERIC_9X2);
-        }
-
-        public static NameBuilder<InventoryMenuBuilder<MenuType.Typed<@NotNull InventoryView, ? extends @NotNull InventoryViewBuilder<@NotNull InventoryView>>>> three() {
-            return new InventoryMenuBuilder<>().type(MenuType.GENERIC_9X3);
-        }
-
-        public static NameBuilder<InventoryMenuBuilder<MenuType.Typed<@NotNull InventoryView, ? extends @NotNull InventoryViewBuilder<@NotNull InventoryView>>>> four() {
-            return new InventoryMenuBuilder<>().type(MenuType.GENERIC_9X4);
-        }
-
-        public static NameBuilder<InventoryMenuBuilder<MenuType.Typed<@NotNull InventoryView, ? extends @NotNull InventoryViewBuilder<@NotNull InventoryView>>>> five() {
-            return new InventoryMenuBuilder<>().type(MenuType.GENERIC_9X5);
-        }
-
-        public static NameBuilder<InventoryMenuBuilder<MenuType.Typed<@NotNull InventoryView, ? extends @NotNull InventoryViewBuilder<@NotNull InventoryView>>>> six() {
-            return new InventoryMenuBuilder<>().type(MenuType.GENERIC_9X6);
+        // Chest with rows builder
+        public static NameBuilder<InventoryMenuBuilder<MenuType.Typed<@NotNull InventoryView, ? extends @NotNull InventoryViewBuilder<@NotNull InventoryView>>>> chest(int rows) {
+            switch (rows) {
+                case 1:
+                    return new InventoryMenuBuilder<>().type(MenuType.GENERIC_9X1);
+                case 2:
+                    return new InventoryMenuBuilder<>().type(MenuType.GENERIC_9X2);
+                case 3:
+                    return new InventoryMenuBuilder<>().type(MenuType.GENERIC_9X3);
+                case 4:
+                    return new InventoryMenuBuilder<>().type(MenuType.GENERIC_9X4);
+                case 5:
+                    return new InventoryMenuBuilder<>().type(MenuType.GENERIC_9X5);
+                case 6:
+                    return new InventoryMenuBuilder<>().type(MenuType.GENERIC_9X6);
+                default:
+                    throw new IllegalArgumentException("A generic gui can not be constructed with less than 1 row nor more than 6 rows.");
+            }
         }
     }
 

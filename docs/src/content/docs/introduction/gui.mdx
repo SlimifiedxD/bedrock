@@ -2,7 +2,7 @@
 title: GUI
 ---
 
-A GUI (pronounced _gooey_) is one of the most important parts of the user experience
+A GUI (pronounced _gee-you-eye_) is one of the most important parts of the user experience
 for people using your plugin. Whether it be server administrators or players,
 GUI's are much more user friendly than commands.
 
@@ -11,15 +11,15 @@ Let's make a GUI together:
 
 ```java
 Menu menu = Menu.Inventory
-                .two()
-                .name(Component.empty())
-                .button(Button.builder()
+                .chest(2) // A 'Chest' GUI with 2 rows
+                .name(Component.empty()) // Without a name
+                .button(Button.builder() // That has a button
                         .item(ItemStack.of(Material.LIME_WOOL))
                         .slot(3)
                         .leftClicked(ctx -> {
                             ctx.player().sendMessage("left click");
                         }))
-                .build();
+                .build(); // Always at the end to finish the GUI
 
 ```
 
@@ -28,7 +28,7 @@ Menu menu = Menu.Inventory
 In the above code, we created a relatively simple menu, though it can be a little hard to read at first glance;
 let's break it down step by step:
 
-- `Menu.Inventory.two()` creates a generic **menu _builder_** that is 2 rows long.
+- `Menu.Inventory.chest(2)` creates a generic (A chest) **menu _builder_** that is 2 rows tall.
 - `.name(Component.empty())` is the name of the menu. Menus must always have a name, and the
   builder takes in a `Component`, which in this case, is empty.
 - `.button()` lets us add a button to the menu, either with a `Button` or a `ButtonBuilder`. The
@@ -53,7 +53,7 @@ Let's create a simple toggle button:
 
 ```java
 final Menu invMenu = Menu.Inventory
-        .two()
+        .chest(2)
         .name(Component.empty())
         .state(
                 State.state("clicked", false)
@@ -82,7 +82,7 @@ one of the `Menu` classes in order to keep type safety. Let's created the same t
 public class TypeSafeMenu extends InventoryMenu {
 
     public TypeSafeMenu(Component name) {
-        super(MenuType.GENERIC_3X3, name);
+        super(MenuType.GENERIC_3X3, name); // A 3 rows tall chest GUI
 
         final State<Boolean> clicked = State.state("clicked", false);
         this.addState(clicked);
@@ -113,7 +113,7 @@ use variables, like this:
 public class TypeSafeMenu extends InventoryMenu {
 
     public TypeSafeMenu(Component name) {
-        super(MenuType.GENERIC_3X3, name);
+        super(MenuType.GENERIC_3X3, name); // A 3 rows tall chest GUI
 
         boolean[] clicked = { false };
 
