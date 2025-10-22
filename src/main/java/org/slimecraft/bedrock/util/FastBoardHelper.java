@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.slimecraft.bedrock.event.EventNode;
+import org.slimecraft.bedrock.internal.Bedrock;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public final class FastBoardHelper {
     private static final Map<UUID, FastBoard> BOARDS = new HashMap<>();
 
     public static void init() {
-        EventNode.global().addListener(PlayerQuitEvent.class, event -> delete(event.getPlayer()));
+        Bedrock.BEDROCK_NODE.addListener(PlayerQuitEvent.class, event -> delete(event.getPlayer()));
     }
 
     public static FastBoard create(Player player) {
