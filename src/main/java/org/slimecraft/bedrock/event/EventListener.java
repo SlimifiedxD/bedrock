@@ -2,9 +2,7 @@ package org.slimecraft.bedrock.event;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public final class EventListener<T> {
@@ -16,7 +14,7 @@ public final class EventListener<T> {
         this.eventType = eventType;
     }
 
-    public static <T> EventListenerBuilder<T> builder(Class<T> clazz) {
+    public static <T> EventListenerBuilder<T> of(Class<T> clazz) {
         return new EventListenerBuilder<>(clazz);
     }
 

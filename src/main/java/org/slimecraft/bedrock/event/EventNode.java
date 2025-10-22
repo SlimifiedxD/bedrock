@@ -35,7 +35,7 @@ public final class EventNode {
     }
 
     /**
-     * Use {@link EventListener#builder(Class)} instead.
+     * Use {@link EventListener#of(Class)} instead.
      */
     @ApiStatus.Obsolete
     public <T> void addListener(Class<T> eventType, Consumer<T> action) {
@@ -44,7 +44,7 @@ public final class EventNode {
     }
 
     /**
-     * Use {@link EventListener#builder(Class)} instead.
+     * Use {@link EventListener#of(Class)} instead.
      */
     @ApiStatus.Obsolete
     public <T> void addListener(Class<T> eventType, Consumer<T> action, Predicate<T> filter) {
