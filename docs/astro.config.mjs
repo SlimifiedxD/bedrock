@@ -15,6 +15,10 @@ export default defineConfig({
 					label: 'Introduction',
 					autogenerate: { directory: 'introduction' }
 				},
+				{
+					label: 'Cookbook',
+					autogenerate: { directory: 'cookbook' }
+				}
 			],
 		}),
 	],
