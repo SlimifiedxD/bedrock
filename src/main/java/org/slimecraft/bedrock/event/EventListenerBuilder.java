@@ -22,8 +22,28 @@ public final class EventListenerBuilder<T>
     }
 
     @Override
-    public EventListenerBuilder<T> filter(Predicate<T> filter) {
+    public EventListenerBuilder<T> filter(Filter<T> filter) {
         listener.addFilter(filter);
+        return this;
+    }
+
+    @Override
+    public EventListenerBuilder<T> filter(FilterBuilder<T> builder) {
+        this.filter(builder.build());
+        return this;
+    }
+
+    @Override
+    public EventListenerBuilder<T> filter(Predicate<T> predicate) {
+        this.filter(new Filter<>(predicate));
+        return this;
+    }
+
+    @Override
+    public EventListenerBuilder<T> filter(Predicate<T> predicate, Consumer<T> orElse) {
+        final Filter<T> filter = new Filter<>(predicate);
+        filter.setOrElse(orElse);
+        this.filter(filter);
         return this;
     }
 

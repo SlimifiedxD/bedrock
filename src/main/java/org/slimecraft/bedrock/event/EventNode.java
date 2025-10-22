@@ -47,10 +47,10 @@ public final class EventNode {
      * Use {@link EventListener#of(Class)} instead.
      */
     @ApiStatus.Obsolete
-    public <T> void addListener(Class<T> eventType, Consumer<T> action, Predicate<T> filter) {
+    public <T> void addListener(Class<T> eventType, Consumer<T> action, Predicate<T> predicate) {
         final EventListener<T> listener = new EventListener<>(eventType);
         listener.addHandler(action);
-        listener.addFilter(filter);
+        listener.addFilter(Filter.of(predicate));
     }
 
     public <T> void addListener(EventListenerBuilder<T> builder) {

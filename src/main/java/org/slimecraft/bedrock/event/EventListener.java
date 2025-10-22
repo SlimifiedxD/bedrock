@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 public final class EventListener<T> {
     private final Class<T> eventType;
     private final List<Consumer<T>> handlers = new ArrayList<>();
-    private final List<Predicate<T>> filters = new ArrayList<>();
+    private final List<Filter<T>> filters = new ArrayList<>();
 
     EventListener(Class<T> eventType) {
         this.eventType = eventType;
@@ -22,8 +22,12 @@ public final class EventListener<T> {
         handlers.add(handler);
     }
 
-    public void addFilter(Predicate<T> filter) {
+    public void addFilter(Filter<T> filter) {
         filters.add(filter);
+    }
+
+    public void addFilter(FilterBuilder<T> builder) {
+        this.addFilter(builder.build());
     }
 
     public Class<T> getEventType() {
@@ -34,7 +38,7 @@ public final class EventListener<T> {
         return handlers;
     }
 
-    public List<Predicate<T>> getFilters() {
+    public List<Filter<T>> getFilters() {
         return filters;
     }
 }
