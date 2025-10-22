@@ -34,4 +34,8 @@ public final class EventListener<T> {
     public Optional<Predicate<T>> getFilter() {
         return Optional.ofNullable(filter);
     }
+
+    public void setFilter(Predicate<T> filter) {
+        this.filter = filter;
+    }
 }
