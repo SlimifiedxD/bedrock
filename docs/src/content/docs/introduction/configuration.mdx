@@ -32,5 +32,23 @@ EventNode.global().addListener(PlayerJoinEvent.class, event -> {
 ```
 
 Just like that, we have created a simple config for our plugin.
+`@ConfigurationValue` puts the given name in the configuration file.
+However, if the name contains any `.`s, the path will become nested in the
+file. For example:
+
+```java
+@Configuration("cool")
+public class Config {
+    @ConfigurationValue("messages.join")
+    public String join = "<player> has joined!";
+}
+```
+
+In the configuration file, assuming it is using YAML, it turns into this:
+
+```yml
+messages:
+ join: "<player> has joined!"
+```
 
 > If `EventNode` is an unfamiliar concept, please refer to <a href="/bedrock/../events">Events</a>.
