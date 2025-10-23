@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @ApiStatus.Internal
-public class MenuManager {
+public final class MenuManager {
     public static final Map<UUID, Menu> MENUS = new HashMap<>();
     /**
      * Because the {@link PrepareAnvilEvent} is called multiple times, and we can't expose that to the end user,

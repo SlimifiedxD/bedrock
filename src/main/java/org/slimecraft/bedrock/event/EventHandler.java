@@ -3,7 +3,7 @@ package org.slimecraft.bedrock.event;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class EventHandler<T> {
+public final class EventHandler<T> {
     private final Consumer<T> consumer;
     private Filter<T> filter;
 

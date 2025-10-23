@@ -10,7 +10,7 @@ import java.util.function.Consumer;
  * A wrapper around BukkitTask that is meant for a more developer-friendly class without the legacy Bukkit methods.
  * This is usually created with some method in {@link TaskBuilder}.
  */
-public class Task {
+public final class Task {
     private final BukkitTask delegate;
     private long timesRan;
     private final long expireAfter;

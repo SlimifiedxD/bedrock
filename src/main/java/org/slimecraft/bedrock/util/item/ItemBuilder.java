@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ItemBuilder implements MaterialBuilderStep, OptionalBuilderStep {
+public final class ItemBuilder implements MaterialBuilderStep, OptionalBuilderStep {
     private ItemBuilder() {}
 
     public static MaterialBuilderStep create() {

@@ -28,7 +28,7 @@ import java.util.Set;
  */
 @ApiStatus.Internal
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
-public class PluginConfigProcessor extends AbstractProcessor {
+public final class PluginConfigProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         for (TypeElement annotation : annotations) {

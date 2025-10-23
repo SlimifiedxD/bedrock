@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class Filter<T> {
+public final class Filter<T> {
     private final Predicate<T> predicate;
     private Consumer<T> orElse;
 
