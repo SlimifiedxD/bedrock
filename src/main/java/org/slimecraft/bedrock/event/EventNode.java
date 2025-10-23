@@ -41,6 +41,7 @@ public final class EventNode {
     public <T> void addListener(Class<T> eventType, Consumer<T> action) {
         final EventListener<T> listener = new EventListener<>(eventType);
         listener.addHandler(action);
+        addListener(listener);
     }
 
     /**
@@ -50,10 +51,11 @@ public final class EventNode {
     public <T> void addListener(Class<T> eventType, Consumer<T> action, Predicate<T> predicate) {
         final EventListener<T> listener = new EventListener<>(eventType);
         listener.addHandler(action, Filter.of(predicate));
+        addListener(listener);
     }
 
     public <T> void addListener(EventListenerBuilder<T> builder) {
-        this.listeners.add(builder.build());
+        addListener(builder.build());
     }
 
     public void addChild(EventNode child) {
