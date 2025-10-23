@@ -10,6 +10,9 @@ export default defineConfig({
 		starlight({
 			title: 'Bedrock',
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/SlimifiedxD/bedrock' }],
+			customCss: [
+				'./src/styles/theme.css'
+			],
 			sidebar: [
 				{
 					label: 'Introduction',
