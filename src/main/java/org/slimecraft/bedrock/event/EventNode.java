@@ -2,6 +2,7 @@ package org.slimecraft.bedrock.event;
 
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.ApiStatus;
+import org.slimecraft.bedrock.internal.Bedrock;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -14,6 +15,12 @@ public final class EventNode {
 
     private static final class SingletonHelper {
         private static final EventNode GLOBAL_NODE = new EventNode(Key.key("bedrock", "global"), new ArrayList<>(), new ArrayList<>());
+        static {
+            /**
+             * This is a quick and dirty hack to initialize bedrock because #getPlugin must be called somewhere.
+             */
+            Bedrock.getPlugin();
+        }
     }
 
     public static EventNode global() {
