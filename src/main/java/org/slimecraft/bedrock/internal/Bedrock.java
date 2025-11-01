@@ -16,9 +16,7 @@ import org.slimecraft.bedrock.menu.Menu;
 import org.slimecraft.bedrock.util.FastBoardHelper;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The main class for bedrock. {@link Bedrock#init(Plugin)} initializes Bedrock and allows the rest of the library to use
@@ -28,6 +26,8 @@ import java.util.UUID;
 @ApiStatus.Internal
 public final class Bedrock {
     public static final EventNode BEDROCK_NODE = new EventNode(Key.key("slimecraft", "bedrock"));
+    public static final Listener BUKKIT_LISTENER = new Listener() {};
+    public static final Set<Class<?>> LAZY_EVENTS = new HashSet<>();
 
     static {
         try {
@@ -53,34 +53,6 @@ public final class Bedrock {
         BEDROCK_NODE.attachTo(EventNode.global());
         FastBoardHelper.init();
         MenuManager.init();
-        try (final ScanResult scanResult = new ClassGraph()
-                .enableClassInfo()
-                .scan()) {
-            final Listener bukkitListener = new Listener() {
-            };
-            for (final ClassInfo classInfo : scanResult.getSubclasses("org.bukkit.event.Event")) {
-                if (classInfo.isAbstract()) {
-                    continue;
-                }
-                @SuppressWarnings("unchecked")
-                Class<? extends Event> clazz = (Class<? extends Event>) classInfo.loadClass();
-
-                if (clazz.getCanonicalName().contains("PlayerLoginEvent")) {
-                    continue; // want to be able to use player configuration events so skip this unsupported hack event
-                }
-                try {
-                    final Method method = clazz.getMethod("getHandlerList");
-                    if (method.getDeclaringClass() != clazz) continue;
-                    Bukkit.getServer().getPluginManager().registerEvent(clazz,
-                            bukkitListener,
-                            EventPriority.NORMAL,
-                            (listener, event) -> {
-                                Events.fire(event);
-                            }, plugin);
-                } catch (NoSuchMethodException ignored) {
-                }
-            }
-        }
     }
 
     /**

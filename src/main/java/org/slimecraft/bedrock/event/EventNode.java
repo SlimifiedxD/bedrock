@@ -1,6 +1,9 @@
 package org.slimecraft.bedrock.event;
 
 import net.kyori.adventure.key.Key;
+import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventPriority;
 import org.jetbrains.annotations.ApiStatus;
 import org.slimecraft.bedrock.internal.Bedrock;
 
@@ -15,6 +18,7 @@ public final class EventNode {
 
     private static final class SingletonHelper {
         private static final EventNode GLOBAL_NODE = new EventNode(Key.key("bedrock", "global"), new ArrayList<>(), new ArrayList<>());
+
         static {
             /**
              * This is a quick and dirty hack to initialize bedrock because #getPlugin must be called somewhere.
@@ -38,6 +42,15 @@ public final class EventNode {
     }
 
     public <T> void addListener(EventListener<T> listener) {
+        if (Bedrock.LAZY_EVENTS.add(listener.getEventType())) {
+            if (!Event.class.isAssignableFrom(listener.getEventType())) return;
+            Bukkit.getServer().getPluginManager().registerEvent((Class<? extends Event>) listener.getEventType(),
+                    Bedrock.BUKKIT_LISTENER,
+                    EventPriority.NORMAL,
+                    (bukkitListener, event) -> {
+                        Events.fire(event);
+                    }, Bedrock.getPlugin());
+        }
         listeners.add(listener);
     }
 
