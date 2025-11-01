@@ -73,7 +73,7 @@ public final class Bedrock {
                     if (method.getDeclaringClass() != clazz) continue;
                     Bukkit.getServer().getPluginManager().registerEvent(clazz,
                             bukkitListener,
-                            EventPriority.HIGHEST,
+                            EventPriority.NORMAL,
                             (listener, event) -> {
                                 Events.fire(event);
                             }, plugin);
