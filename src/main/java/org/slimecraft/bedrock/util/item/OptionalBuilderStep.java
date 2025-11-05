@@ -21,7 +21,9 @@ public interface OptionalBuilderStep {
 
     OptionalBuilderStep lore(ItemLore lore);
 
-    OptionalBuilderStep lore(List<String> lore);
+    OptionalBuilderStep lore(List<Component> lore);
+
+    OptionalBuilderStep loreString(List<String> lore);
 
     OptionalBuilderStep amount(int amount);
 

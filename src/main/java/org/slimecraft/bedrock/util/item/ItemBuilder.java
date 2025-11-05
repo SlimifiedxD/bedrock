@@ -61,7 +61,15 @@ public final class ItemBuilder implements MaterialBuilderStep, OptionalBuilderSt
     }
 
     @Override
-    public OptionalBuilderStep lore(List<String> lore) {
+    public OptionalBuilderStep lore(List<Component> lore) {
+        final ItemLore.Builder itemLore = ItemLore.lore();
+        lore.forEach(itemLore::addLine);
+        lore(itemLore.build());
+        return this;
+    }
+
+    @Override
+    public OptionalBuilderStep loreString(List<String> lore) {
         final ItemLore.Builder itemLore = ItemLore.lore();
         lore.forEach(s -> {
             itemLore.addLine(deserialize(s));
