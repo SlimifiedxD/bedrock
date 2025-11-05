@@ -23,6 +23,12 @@ public final class ItemBuilder implements MaterialBuilderStep, OptionalBuilderSt
         return new ItemBuilder();
     }
 
+    public static ItemBuilder from(ItemStack itemStack) {
+        final ItemBuilder builder = new ItemBuilder();
+        builder.itemStack = itemStack;
+        return builder;
+    }
+
     private ItemStack itemStack;
     private MiniMessage miniMessage = MiniMessage.miniMessage();
 
