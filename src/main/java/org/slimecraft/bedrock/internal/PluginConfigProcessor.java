@@ -1,9 +1,9 @@
 package org.slimecraft.bedrock.internal;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.slimecraft.bedrock.annotation.plugin.Plugin;
 import org.slimecraft.bedrock.dependency.LoadOrder;
 import org.slimecraft.bedrock.dependency.LoadStage;
-import org.slimecraft.bedrock.annotation.Plugin;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
