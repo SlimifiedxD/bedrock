@@ -1,4 +1,4 @@
-package org.slimecraft.bedrock.util;
+package org.slimecraft.bedrock.util.location;
 
 import org.bukkit.Location;
 
