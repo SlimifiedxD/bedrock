@@ -30,6 +30,12 @@ public final class TaskBuilder {
         return this;
     }
 
+    public TaskBuilder delayAndRepeat(long delayRepeat) {
+        this.delay = delayRepeat;
+        this.repeat = delayRepeat;
+        return this;
+    }
+
     public TaskBuilder whenRan(Consumer<Task> whenRan) {
         this.whenRan = whenRan;
         return this;
