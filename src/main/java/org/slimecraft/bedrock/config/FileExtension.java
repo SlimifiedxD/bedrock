@@ -1,6 +1,7 @@
 package org.slimecraft.bedrock.config;
 
-import org.slimecraft.bedrock.annotation.Configuration;
+
+import org.slimecraft.bedrock.annotation.config.Configuration;
 
 /**
  * Represents a file extension that can be used in a {@link Configuration}.

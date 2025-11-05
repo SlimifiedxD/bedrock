@@ -1,7 +1,7 @@
 package org.slimecraft.bedrock.config;
 
-import org.slimecraft.bedrock.annotation.Configuration;
-import org.slimecraft.bedrock.annotation.ConfigurationValue;
+import org.slimecraft.bedrock.annotation.config.Configuration;
+import org.slimecraft.bedrock.annotation.config.ConfigurationValue;
 import org.slimecraft.bedrock.internal.Bedrock;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;

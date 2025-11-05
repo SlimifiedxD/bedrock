@@ -4,6 +4,7 @@ import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.jetbrains.annotations.ApiStatus;
 import org.slimecraft.bedrock.internal.Bedrock;
 
@@ -48,6 +49,7 @@ public final class EventNode {
                     Bedrock.BUKKIT_LISTENER,
                     EventPriority.NORMAL,
                     (bukkitListener, event) -> {
+                        if (event.getClass() != listener.getEventType()) return; // don't fire subclasses of events
                         Events.fire(event);
                     }, Bedrock.getPlugin());
         }
