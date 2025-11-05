@@ -1,4 +1,4 @@
-package org.slimecraft.bedrock.annotation;
+package org.slimecraft.bedrock.annotation.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

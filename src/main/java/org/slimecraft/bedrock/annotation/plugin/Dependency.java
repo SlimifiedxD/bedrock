@@ -1,4 +1,4 @@
-package org.slimecraft.bedrock.annotation;
+package org.slimecraft.bedrock.annotation.plugin;
 
 import org.slimecraft.bedrock.dependency.LoadOrder;
 import org.slimecraft.bedrock.dependency.LoadStage;

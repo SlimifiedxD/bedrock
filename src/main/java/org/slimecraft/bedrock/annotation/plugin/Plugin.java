@@ -1,4 +1,4 @@
-package org.slimecraft.bedrock.annotation;
+package org.slimecraft.bedrock.annotation.plugin;
 
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.loader.PluginLoader;
