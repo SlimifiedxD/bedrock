@@ -4,6 +4,7 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -28,6 +29,7 @@ public final class Bedrock {
     public static final EventNode BEDROCK_NODE = new EventNode(Key.key("slimecraft", "bedrock"));
     public static final Listener BUKKIT_LISTENER = new Listener() {};
     public static final Set<Class<?>> LAZY_EVENTS = new HashSet<>();
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
     static {
         try {
@@ -64,5 +66,9 @@ public final class Bedrock {
         if (Bedrock.plugin == null)
             throw new IllegalStateException("Bedrock was not initialized! Please initialize it before using library functions.");
         return plugin;
+    }
+
+    public static MiniMessage getMiniMessage() {
+        return MINI_MESSAGE;
     }
 }
