@@ -1,6 +1,7 @@
 plugins {
     `java-library`
     `maven-publish`
+    kotlin("jvm")
 }
 
 group = "com.github.SlimifiedxD"
@@ -22,6 +23,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    compileOnly(kotlin("stdlib-jdk8"))
 }
 
 tasks.test {
