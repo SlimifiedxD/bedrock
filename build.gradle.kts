@@ -13,6 +13,7 @@ repositories {
         name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
+    maven("https://jitpack.io")
 }
 
 dependencies {
