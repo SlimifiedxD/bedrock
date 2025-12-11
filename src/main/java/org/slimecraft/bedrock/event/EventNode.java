@@ -42,6 +42,10 @@ public final class EventNode {
         this(identifier, new ArrayList<>(), new ArrayList<>());
     }
 
+    public <T> void fire(T event) {
+        fireEventNodeRecursive(event);
+    }
+
     public <T> void addListener(EventListener<T> listener) {
         if (Bedrock.bedrock().getLazyEvents().add(listener.getEventType())) {
             if (!Event.class.isAssignableFrom(listener.getEventType())) return;
@@ -50,7 +54,7 @@ public final class EventNode {
                     EventPriority.NORMAL,
                     (bukkitListener, event) -> {
                         if (event.getClass() != listener.getEventType()) return; // don't fire subclasses of events
-                        Events.fire(event);
+                        EventNode.global().fire(event);
                     }, Bedrock.bedrock().getPlugin());
         }
         listeners.add(listener);
@@ -98,5 +102,32 @@ public final class EventNode {
 
     public List<EventListener<?>> getListeners() {
         return Collections.unmodifiableList(listeners);
+    }
+
+    private <T> void fireEventNodeRecursive(T event) {
+        fireEventNode(event);
+        getChildren().forEach(child -> fireEventNodeRecursive(event));
+    }
+
+    private <T> void fireEventNode(T event) {
+        getListeners().forEach(listener -> {
+            if (!listener.getEventType().isAssignableFrom(event.getClass())) {
+                return;
+            }
+            final var typedListener = (EventListener<T>) listener;
+            for (var handler : typedListener.getHandlers()) {
+                final var optFilter = handler.getFilter();
+                if (optFilter.isPresent()) {
+                    final var filter = optFilter.get();
+                    if (!filter.getPredicate().test(event)) {
+                        filter.getOrElse().ifPresent(orElseHandler -> {
+                            orElseHandler.accept(event);
+                        });
+                        continue;
+                    }
+                }
+                handler.getConsumer().accept(event);
+            }
+        });
     }
 }

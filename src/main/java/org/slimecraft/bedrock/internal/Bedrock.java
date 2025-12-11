@@ -12,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.ApiStatus;
 import org.slimecraft.bedrock.event.EventNode;
-import org.slimecraft.bedrock.event.Events;
 import org.slimecraft.bedrock.menu.Menu;
 import org.slimecraft.bedrock.util.FastBoardHelper;
 
