@@ -4,5 +4,5 @@ import net.kyori.adventure.text.Component
 import org.slimecraft.bedrock.internal.Bedrock
 
 fun String.component(): Component {
-    return Bedrock.getMiniMessage().deserialize(this)
+    return Bedrock.bedrock().miniMessage.deserialize(this)
 }
