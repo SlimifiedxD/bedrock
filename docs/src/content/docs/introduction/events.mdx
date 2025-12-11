@@ -24,8 +24,11 @@ EventNode.global().addListener(PlayerJoinEvent.class, event -> {
 An event can be manually fired to the global event node by doing:
 
 ```java
-Events.fire(new MyCustomEvent());
+EventNode.global().fire(new MyCustomEvent());
 ```
+
+In the above example, you can see that event nodes are able to fire events to only them and their children. This means that you can fine-grain event firing to only the nodes that need it.
+Keep in mind, though, that all events from Paper and its predecessors are always fired to the global event node and will always be received by all event nodes, since they are children of the global event node.
 
 All listeners on the global event node and its children will have this event be propagated to them,
 and will be able to do something with them.
