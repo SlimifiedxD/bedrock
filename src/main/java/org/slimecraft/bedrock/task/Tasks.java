@@ -27,12 +27,12 @@ public final class Tasks {
     public static void run(Consumer<Task> taskConsumer, boolean async) {
         if (async) {
             Bukkit.getScheduler().runTaskAsynchronously(Bedrock.bedrock().getPlugin(), bukkitTask -> {
-                taskConsumer.accept(new Task(bukkitTask, 0, null));
+                taskConsumer.accept(new Task(bukkitTask, 0, null, null));
             });
             return;
         }
         Bukkit.getScheduler().runTask(Bedrock.bedrock().getPlugin(), bukkitTask -> {
-            taskConsumer.accept(new Task(bukkitTask, 0, null));
+            taskConsumer.accept(new Task(bukkitTask, 0, null, null));
         });
     }
 
@@ -52,12 +52,12 @@ public final class Tasks {
     public static void later(Consumer<Task> taskConsumer, long later, boolean async) {
         if (async) {
             Bukkit.getScheduler().runTaskLaterAsynchronously(Bedrock.bedrock().getPlugin(), bukkitTask -> {
-                taskConsumer.accept(new Task(bukkitTask, 0, null));
+                taskConsumer.accept(new Task(bukkitTask, 0, null, null));
             }, later);
             return;
         }
         Bukkit.getScheduler().runTaskLater(Bedrock.bedrock().getPlugin(), bukkitTask -> {
-            taskConsumer.accept(new Task(bukkitTask, 0, null));
+            taskConsumer.accept(new Task(bukkitTask, 0, null, null));
         }, later);
     }
 
@@ -91,7 +91,7 @@ public final class Tasks {
             bukkitTask = Bukkit.getScheduler().runTaskTimer(Bedrock.bedrock().getPlugin(), runnable, delay, timer);
         }
 
-        holder[0] = new Task(bukkitTask, 0, null);
+        holder[0] = new Task(bukkitTask, 0, null, null);
     }
 
     /**

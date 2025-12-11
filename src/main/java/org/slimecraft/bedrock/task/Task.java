@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * A wrapper around BukkitTask that is meant for a more developer-friendly class without the legacy Bukkit methods.
@@ -15,15 +16,17 @@ public final class Task {
     private long timesRan;
     private final long expireAfter;
     private Consumer<Task> whenStopped;
+    private Predicate<Task> expireWhen;
 
     /**
      * Creates a task.
      * @param delegate The delegate which this task should use.
      */
-    public Task(@NotNull BukkitTask delegate, long expireAfter, @Nullable Consumer<Task> whenStopped) {
+    public Task(@NotNull BukkitTask delegate, long expireAfter, @Nullable Predicate<Task> expireWhen, @Nullable Consumer<Task> whenStopped) {
         this.delegate = delegate;
         this.expireAfter = expireAfter;
         this.whenStopped = whenStopped;
+        this.expireWhen = expireWhen;
     }
 
     public static TaskBuilder builder() {
@@ -38,6 +41,11 @@ public final class Task {
         timesRan++;
         if (this.expireAfter == timesRan) {
             this.cancel();
+        }
+        if (this.expireWhen != null) {
+            if (this.expireWhen.test(this)) {
+                this.cancel();
+            }
         }
     }
 

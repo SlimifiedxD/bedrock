@@ -7,6 +7,7 @@ import org.slimecraft.bedrock.util.Ticks;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public final class TaskBuilder {
     private Long delay;
@@ -16,6 +17,7 @@ public final class TaskBuilder {
     private long expireAfter;
     private boolean async;
     private BiConsumer<Task, Throwable> whenError;
+    private Predicate<Task> expireWhen;
 
     public TaskBuilder() {
     }
@@ -48,6 +50,11 @@ public final class TaskBuilder {
 
     public TaskBuilder expireAfter(long expireAfter) {
         this.expireAfter = expireAfter;
+        return this;
+    }
+
+    public TaskBuilder expireWhen(Predicate<Task> expireWhen) {
+        this.expireWhen = expireWhen;
         return this;
     }
 
@@ -110,7 +117,7 @@ public final class TaskBuilder {
                 bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Bedrock.bedrock().getPlugin(), runnable, delay, repeat);
             }
         }
-        mutableTask[0] = new Task(bukkitTask, expireAfter, whenStopped);
+        mutableTask[0] = new Task(bukkitTask, expireAfter, null, whenStopped);
 
         return mutableTask[0];
     }
