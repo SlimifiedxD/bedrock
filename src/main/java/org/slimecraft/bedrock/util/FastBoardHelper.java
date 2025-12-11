@@ -23,7 +23,7 @@ public final class FastBoardHelper {
     private static final Map<UUID, FastBoard> BOARDS = new HashMap<>();
 
     public static void init() {
-        Bedrock.BEDROCK_NODE.addListener(PlayerQuitEvent.class, event -> delete(event.getPlayer()));
+        Bedrock.bedrock().getBedrockNode().addListener(PlayerQuitEvent.class, event -> delete(event.getPlayer()));
     }
 
     public static FastBoard create(Player player) {

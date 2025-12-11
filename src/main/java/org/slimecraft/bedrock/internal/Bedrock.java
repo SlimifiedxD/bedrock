@@ -26,10 +26,11 @@ import java.util.*;
  */
 @ApiStatus.Internal
 public final class Bedrock {
-    public static final EventNode BEDROCK_NODE = new EventNode(Key.key("slimecraft", "bedrock"));
-    public static final Listener BUKKIT_LISTENER = new Listener() {};
-    public static final Set<Class<?>> LAZY_EVENTS = new HashSet<>();
-    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    private final EventNode bedrockNode = new EventNode(Key.key("slimecraft", "bedrock"));
+    private final Listener bukkitListener = new Listener() {};
+    private final Set<Class<?>> lazyEvents = new HashSet<>();
+    private MiniMessage miniMessage = MiniMessage.miniMessage();
+    private Plugin plugin;
 
     static {
         try {
@@ -39,20 +40,26 @@ public final class Bedrock {
         }
     }
 
-    private static Plugin plugin;
-
     private Bedrock() {
+    }
+
+    public static Bedrock bedrock() {
+        return Singleton.INSTANCE;
+    }
+
+    private static final class Singleton {
+        public static final Bedrock INSTANCE = new Bedrock();
     }
 
     /**
      * Initialize bedrock with the given plugin.
      */
-    public static void init(Plugin plugin) {
-        if (Bedrock.plugin != null) {
+    public void init(Plugin plugin) {
+        if (this.plugin != null) {
             return;
         }
-        Bedrock.plugin = plugin;
-        BEDROCK_NODE.attachTo(EventNode.global());
+        this.plugin = plugin;
+        bedrockNode.attachTo(EventNode.global());
         FastBoardHelper.init();
         MenuManager.init();
     }
@@ -62,13 +69,29 @@ public final class Bedrock {
      *
      * @throws IllegalStateException When Bedrock has not been initialized.
      */
-    public static Plugin getPlugin() {
-        if (Bedrock.plugin == null)
+    public Plugin getPlugin() {
+        if (plugin == null)
             throw new IllegalStateException("Bedrock was not initialized! Please initialize it before using library functions.");
         return plugin;
     }
 
-    public static MiniMessage getMiniMessage() {
-        return MINI_MESSAGE;
+    public MiniMessage getMiniMessage() {
+        return miniMessage;
+    }
+
+    public void setMiniMessage(MiniMessage miniMessage) {
+        this.miniMessage = miniMessage;
+    }
+
+    public Listener getBukkitListener() {
+        return bukkitListener;
+    }
+
+    public Set<Class<?>> getLazyEvents() {
+        return lazyEvents;
+    }
+
+    public EventNode getBedrockNode() {
+        return bedrockNode;
     }
 }

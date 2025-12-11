@@ -26,12 +26,12 @@ public final class Tasks {
      */
     public static void run(Consumer<Task> taskConsumer, boolean async) {
         if (async) {
-            Bukkit.getScheduler().runTaskAsynchronously(Bedrock.getPlugin(), bukkitTask -> {
+            Bukkit.getScheduler().runTaskAsynchronously(Bedrock.bedrock().getPlugin(), bukkitTask -> {
                 taskConsumer.accept(new Task(bukkitTask, 0, null));
             });
             return;
         }
-        Bukkit.getScheduler().runTask(Bedrock.getPlugin(), bukkitTask -> {
+        Bukkit.getScheduler().runTask(Bedrock.bedrock().getPlugin(), bukkitTask -> {
             taskConsumer.accept(new Task(bukkitTask, 0, null));
         });
     }
@@ -51,12 +51,12 @@ public final class Tasks {
      */
     public static void later(Consumer<Task> taskConsumer, long later, boolean async) {
         if (async) {
-            Bukkit.getScheduler().runTaskLaterAsynchronously(Bedrock.getPlugin(), bukkitTask -> {
+            Bukkit.getScheduler().runTaskLaterAsynchronously(Bedrock.bedrock().getPlugin(), bukkitTask -> {
                 taskConsumer.accept(new Task(bukkitTask, 0, null));
             }, later);
             return;
         }
-        Bukkit.getScheduler().runTaskLater(Bedrock.getPlugin(), bukkitTask -> {
+        Bukkit.getScheduler().runTaskLater(Bedrock.bedrock().getPlugin(), bukkitTask -> {
             taskConsumer.accept(new Task(bukkitTask, 0, null));
         }, later);
     }
@@ -86,9 +86,9 @@ public final class Tasks {
 
         BukkitTask bukkitTask;
         if (async) {
-            bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Bedrock.getPlugin(), runnable, delay, timer);
+            bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Bedrock.bedrock().getPlugin(), runnable, delay, timer);
         } else {
-            bukkitTask = Bukkit.getScheduler().runTaskTimer(Bedrock.getPlugin(), runnable, delay, timer);
+            bukkitTask = Bukkit.getScheduler().runTaskTimer(Bedrock.bedrock().getPlugin(), runnable, delay, timer);
         }
 
         holder[0] = new Task(bukkitTask, 0, null);

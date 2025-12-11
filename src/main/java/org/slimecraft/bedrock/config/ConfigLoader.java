@@ -20,7 +20,7 @@ public class ConfigLoader {
         }
         try {
             final T config = clazz.getConstructor().newInstance();
-            final File file = new File(Bedrock.getPlugin().getDataPath().resolve(clazz.getDeclaredAnnotation(Configuration.class).value()) + "." + fileExtension.name().toLowerCase());
+            final File file = new File(Bedrock.bedrock().getPlugin().getDataPath().resolve(clazz.getDeclaredAnnotation(Configuration.class).value()) + "." + fileExtension.name().toLowerCase());
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
                 file.createNewFile();

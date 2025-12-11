@@ -30,7 +30,7 @@ public final class MenuManager {
     private static final Map<UUID, String> ANVIL_TEXT = new HashMap<>();
 
     public static void init() {
-        Bedrock.BEDROCK_NODE
+        Bedrock.bedrock().getBedrockNode()
                 .addListener(PrepareAnvilEvent.class, event -> {
                     final AnvilView view = event.getView();
                     final Player player = (Player) view.getPlayer();
@@ -54,7 +54,7 @@ public final class MenuManager {
                     }
                 });
 
-        Bedrock.BEDROCK_NODE
+        Bedrock.bedrock().getBedrockNode()
                 .addListener(InventoryCloseEvent.class, event -> {
                     final UUID id = event.getPlayer().getUniqueId();
                     if (!MENUS.containsKey(id)) {
@@ -70,7 +70,7 @@ public final class MenuManager {
                             }).run();
                 });
 
-        Bedrock.BEDROCK_NODE
+        Bedrock.bedrock().getBedrockNode()
                 .addListener(InventoryClickEvent.class, event -> {
                     final Player player = (Player) event.getWhoClicked();
                     final UUID id = player.getUniqueId();

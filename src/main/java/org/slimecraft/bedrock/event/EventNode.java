@@ -24,7 +24,7 @@ public final class EventNode {
             /**
              * This is a quick and dirty hack to initialize bedrock because #getPlugin must be called somewhere.
              */
-            Bedrock.getPlugin();
+            Bedrock.bedrock().getPlugin();
         }
     }
 
@@ -43,15 +43,15 @@ public final class EventNode {
     }
 
     public <T> void addListener(EventListener<T> listener) {
-        if (Bedrock.LAZY_EVENTS.add(listener.getEventType())) {
+        if (Bedrock.bedrock().getLazyEvents().add(listener.getEventType())) {
             if (!Event.class.isAssignableFrom(listener.getEventType())) return;
             Bukkit.getServer().getPluginManager().registerEvent((Class<? extends Event>) listener.getEventType(),
-                    Bedrock.BUKKIT_LISTENER,
+                    Bedrock.bedrock().getBukkitListener(),
                     EventPriority.NORMAL,
                     (bukkitListener, event) -> {
                         if (event.getClass() != listener.getEventType()) return; // don't fire subclasses of events
                         Events.fire(event);
-                    }, Bedrock.getPlugin());
+                    }, Bedrock.bedrock().getPlugin());
         }
         listeners.add(listener);
     }
