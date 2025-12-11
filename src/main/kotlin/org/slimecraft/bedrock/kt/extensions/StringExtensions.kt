@@ -3,6 +3,6 @@ package org.slimecraft.bedrock.kt.extensions
 import net.kyori.adventure.text.Component
 import org.slimecraft.bedrock.internal.Bedrock
 
-fun String.serializeToComponent(): Component {
+fun String.component(): Component {
     return Bedrock.getMiniMessage().deserialize(this)
 }
