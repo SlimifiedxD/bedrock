@@ -117,7 +117,7 @@ public final class TaskBuilder {
                 bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Bedrock.bedrock().getPlugin(), runnable, delay, repeat);
             }
         }
-        mutableTask[0] = new Task(bukkitTask, expireAfter, null, whenStopped);
+        mutableTask[0] = new Task(bukkitTask, expireAfter, expireWhen, whenStopped);
 
         return mutableTask[0];
     }
