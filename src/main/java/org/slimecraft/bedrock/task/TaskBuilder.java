@@ -71,7 +71,7 @@ public final class TaskBuilder {
 
     public TaskBuilder then(TaskBuilder then) {
         this.then = then;
-        return then;
+        return this;
     }
 
     public Task run() {
