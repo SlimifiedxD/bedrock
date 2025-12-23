@@ -69,10 +69,6 @@ public final class TaskBuilder {
     }
 
     public Task run() {
-        return this.fromFields();
-    }
-
-    private Task fromFields() {
         final BukkitTask bukkitTask;
         final Task[] mutableTask = new Task[1];
         final Runnable runnable = () -> {
@@ -80,11 +76,11 @@ public final class TaskBuilder {
             if (task == null) return;
             if (whenRan != null) {
                 if (whenError != null) {
-                     try {
-                         whenRan.accept(task);
-                     } catch (Throwable throwable) {
-                         whenError.accept(task, throwable);
-                     }
+                    try {
+                        whenRan.accept(task);
+                    } catch (Throwable throwable) {
+                        whenError.accept(task, throwable);
+                    }
                 } else {
                     whenRan.accept(task);
                 }
