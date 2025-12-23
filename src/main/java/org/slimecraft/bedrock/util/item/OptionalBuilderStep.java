@@ -13,8 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public interface OptionalBuilderStep {
-    OptionalBuilderStep miniMessage(MiniMessage miniMessage);
-
     OptionalBuilderStep name(Component name);
 
     OptionalBuilderStep name(String name);

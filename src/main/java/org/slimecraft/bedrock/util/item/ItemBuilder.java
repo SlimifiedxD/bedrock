@@ -13,6 +13,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.slimecraft.bedrock.internal.Bedrock;
 
 import java.util.List;
 
@@ -30,17 +31,10 @@ public final class ItemBuilder implements MaterialBuilderStep, OptionalBuilderSt
     }
 
     private ItemStack itemStack;
-    private MiniMessage miniMessage = MiniMessage.miniMessage();
 
     @Override
     public OptionalBuilderStep material(Material material) {
         itemStack = ItemStack.of(material);
-        return this;
-    }
-
-    @Override
-    public OptionalBuilderStep miniMessage(MiniMessage miniMessage) {
-        this.miniMessage = miniMessage;
         return this;
     }
 
@@ -79,7 +73,7 @@ public final class ItemBuilder implements MaterialBuilderStep, OptionalBuilderSt
     }
 
     private Component deserialize(String input) {
-        return miniMessage.deserialize(input).colorIfAbsent(NamedTextColor.WHITE).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+        return Bedrock.bedrock().getMiniMessage().deserialize(input).colorIfAbsent(NamedTextColor.WHITE).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 
     @Override
