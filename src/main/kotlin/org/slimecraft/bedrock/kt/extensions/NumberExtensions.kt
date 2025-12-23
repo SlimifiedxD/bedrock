@@ -2,19 +2,18 @@ package org.slimecraft.bedrock.kt.extensions
 
 import org.slimecraft.bedrock.util.Ticks
 
-private fun longToTicks(long: Long, type: TickType): Long {
-    return when(type) {
-        TickType.SECONDS -> Ticks.seconds(long)
-        TickType.MINUTES -> Ticks.minutes(long)
-        TickType.HOURS -> Ticks.hours(long)
-        TickType.DAYS -> Ticks.days(long)
-    }
-}
+val Int.seconds get() = Ticks.seconds(this.toLong())
 
-fun Int.ticks(type: TickType): Long {
-    return longToTicks(this.toLong(), type)
-}
+val Int.minutes get() = Ticks.minutes(this.toLong())
 
-fun Long.ticks(type: TickType): Long {
-    return longToTicks(this, type)
-}
+val Int.hours get() = Ticks.hours(this.toLong())
+
+val Int.days get() = Ticks.days(this.toLong())
+
+val Long.seconds get() = Ticks.seconds(this)
+
+val Long.minutes get() = Ticks.minutes(this)
+
+val Long.hours get() = Ticks.hours(this)
+
+val Long.days get() = Ticks.days(this)
