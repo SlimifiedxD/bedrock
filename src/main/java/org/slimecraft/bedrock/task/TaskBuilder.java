@@ -29,6 +29,9 @@ public final class TaskBuilder {
     }
 
     public TaskBuilder repeat(long repeat) {
+        if (this.then != null) {
+            throw new IllegalStateException("Cannot use #repeat() on a chained task!");
+        }
         this.repeat = repeat;
         return this;
     }
@@ -70,6 +73,9 @@ public final class TaskBuilder {
     }
 
     public TaskBuilder then(TaskBuilder then) {
+        if (this.repeat != null) {
+            throw new IllegalStateException("Cannot use #then() on a repeating task!");
+        }
         this.then = then;
         return this;
     }
