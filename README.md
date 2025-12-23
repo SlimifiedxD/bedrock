@@ -1,4 +1,4 @@
-# Bedrock
+# Quartz
 
 ### The last dependency you'll ever need for plugin development.
 
