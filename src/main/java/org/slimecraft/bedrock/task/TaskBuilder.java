@@ -18,6 +18,7 @@ public final class TaskBuilder {
     private boolean async;
     private BiConsumer<Task, Throwable> whenError;
     private Predicate<Task> expireWhen;
+    private TaskBuilder then;
 
     public TaskBuilder() {
     }
@@ -68,6 +69,11 @@ public final class TaskBuilder {
         return this;
     }
 
+    public TaskBuilder then(TaskBuilder then) {
+        this.then = then;
+        return then;
+    }
+
     public Task run() {
         final BukkitTask bukkitTask;
         final Task[] mutableTask = new Task[1];
@@ -83,6 +89,9 @@ public final class TaskBuilder {
                     }
                 } else {
                     whenRan.accept(task);
+                }
+                if (then != null) {
+                    then.run();
                 }
             }
             task.incrementTimesRan();
