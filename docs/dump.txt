@@ -1,0 +1,652 @@
+---
+title: Welcome to Quartz
+description: Get started building your docs site with Starlight.
+template: splash # Remove or comment out this line to display the site sidebar on this page.
+hero:
+  tagline: The last dependency you'll ever need for plugin development.
+  image:
+    file: ../../assets/logo.png
+  actions:
+    - text: Visit The Docs
+      link: /quartz/introduction
+      icon: right-arrow
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+
+-----------------------------------------
+---
+title: Configuration
+---
+
+Configuration is a key part of plugins; they allow the user to customize messages, behaviour, or
+even make their own mechanics. Of course, since configuration is such a vital part of plugin
+development, like everything else, Quartz provides first-class support for it.
+
+> Configuration should always be stateless; there are no exceptions.
+
+Since configuration is stateless, there must be a no-args constructor in the class annotated with `@Configuration`.
+Let's create a simple `Config` class:
+
+```java
+@Configuration("cool")
+public class Config {
+    @ConfigurationValue("join")
+    public String join = "<player> has joined!";
+}
+```
+
+Now let's use it:
+
+```java
+final Config config = ConfigLoader.load(Config.class, FileExtension.YML);
+
+EventNode.global().addListener(PlayerJoinEvent.class, event -> {
+    final Player player = event.getPlayer();
+    event.joinMessage(MiniMessage.miniMessage().deserialize(config.join, TagResolver.resolver("player",
+        Tag.selfClosingInserting(player.displayName()))));
+    });
+```
+
+Just like that, we have created a simple config for our plugin.
+`@ConfigurationValue` puts the given name in the configuration file.
+However, if the name contains any `.`s, the path will become nested in the
+file. For example:
+
+```java
+@Configuration("cool")
+public class Config {
+    @ConfigurationValue("messages.join")
+    public String join = "<player> has joined!";
+}
+```
+
+In the configuration file, assuming it is using YAML, it turns into this:
+
+```yml
+messages:
+ join: "<player> has joined!"
+```
+
+> If `EventNode` is an unfamiliar concept, please refer to <a href="/bedrock/../events">Events</a>.
+
+-----------------------------------------
+---
+title: Events
+sidebar:
+  order: 4
+---
+
+Events are one of the most important parts of a plugin. Of course, that means they
+get first class treatment within the framework. First, let's cover some definitions:
+
+> Listener: Something that can act upon an event.
+
+> Event Node: An object that can have an arbitary amount of listeners and children event nodes.
+
+> Global Event Node: The root event node to which all events are propagated and all children are directly/indirectly attached to.
+
+```java
+EventNode.global().addListener(PlayerJoinEvent.class, event -> {
+    final Player player = event.getPlayer();
+
+    player.sendMessage(Component.text("You joined the game!"));
+});
+```
+
+An event can be manually fired to the global event node by doing:
+
+```java
+EventNode.global().fire(new MyCustomEvent());
+```
+
+In the above example, you can see that event nodes are able to fire events to only them and their children. This means that you can fine-grain event firing to only the nodes that need it.
+Keep in mind, though, that all events from Paper and its predecessors are always fired to the global event node and will always be received by all event nodes, since they are children of the global event node.
+
+All listeners on the global event node and its children will have this event be propagated to them,
+and will be able to do something with them.
+
+There is also a builder for events that can be used:
+
+```java
+node.addListener(EventListener.builder(PlayerJoinEvent.class, event -> {
+    event.getPlayer().sendMessage(Component.text("Your health is less than or equal to 15!"));
+}).predicate(event -> event.getPlayer().getHealth() <= 15));
+```
+
+As you can see, this system is far more powerful than Bukkit's standard event listener system.
+
+-----------------------------------------
+---
+title: Tasks
+---
+
+Tasks are an essential part of plugin development, and yet they are so convoluted. Of course, Quartz makes them much
+simpler.
+
+A standard synchronous task:
+
+```java
+Tasks.run(task -> {
+    System.out.println("I'm from a task!");
+});
+```
+
+A task that will run later:
+
+```java
+Tasks.later(task -> {
+    System.out.println("I'm from a task that ran one second later!");
+}, Ticks.seconds(1));
+```
+
+A repeating task:
+
+```java
+Tasks.repeating(task -> {
+    if (task.getTimesRan() == 10) {
+        System.out.println("ran ten times");
+        task.cancel();
+    }
+}, Ticks.seconds(1), Ticks.seconds(1));
+
+```
+
+Tasks can be made async in a similar fashion, with the exception of passing in **true** as the last parameter to indicate that it's async.
+For example:
+
+```java
+Tasks.later(task -> {
+    // do some async logic (e.g. fetching from a db)
+}, Ticks.seconds(1), true)
+```
+
+> The above API has since been replacted with a new builder API. It is considered legacy and will not receive updates.
+
+The builder API is the natural next step once you feel like you need more customization over your tasks.
+Let's make a task that runs 3 times, cancels afterwards, and prints `"cancelled"` after it stops.
+
+The old API:
+
+```java
+Tasks.repeating(task -> {
+    if (task.getTimesRan() == 3) {
+        System.out.println("3 TIMES!");
+        task.cancel();
+        return;
+    }
+    System.out.println("I JUST RAN!");
+}, Ticks.none(), Ticks.seconds(1));
+```
+
+The new builder API:
+
+```java
+Task.builder()
+    .expireAfter(3)
+    .whenRan(task -> {
+        System.out.println("I JUST RAN!");
+    })
+    .whenStopped(task -> {
+        System.out.println("3 TIMES!");
+    })
+    .repeat(Ticks.seconds(1))
+    .run();
+```
+
+As you can see, the builder is much more fluent and human-readable, though it may
+be overkill to use for simple tasks. In that case, `Tasks` can be used, though
+it is advised to use the `TaskBuilder` acessed with `Task.builder()` for
+future API updates.
+
+-----------------------------------------
+---
+title: GUI
+---
+
+A GUI (pronounced _gee-you-eye_) is one of the most important parts of the user experience
+for people using your plugin. Whether it be server administrators or players,
+GUI's are much more user friendly than commands.
+
+Since GUI's are so vital, **Quartz** provides first-class support for all types of GUI's.
+Let's make a GUI together:
+
+```java
+Menu menu = Menu.Inventory
+                .chest(2) // A 'Chest' GUI with 2 rows
+                .name(Component.empty()) // Without a name
+                .button(Button.builder() // That has a button
+                        .item(ItemStack.of(Material.LIME_WOOL))
+                        .slot(3)
+                        .leftClicked(ctx -> {
+                            ctx.player().sendMessage("left click");
+                        }))
+                .build(); // Always at the end to finish the GUI
+
+```
+
+> A Menu is a wrapper over traditional GUI's that is the foundation of Quartz's approach to user interfaces.
+
+In the above code, we created a relatively simple menu, though it can be a little hard to read at first glance;
+let's break it down step by step:
+
+- `Menu.Inventory.chest(2)` creates a generic (A chest) **menu _builder_** that is 2 rows tall.
+- `.name(Component.empty())` is the name of the menu. Menus must always have a name, and the
+  builder takes in a `Component`, which in this case, is empty.
+- `.button()` lets us add a button to the menu, either with a `Button` or a `ButtonBuilder`. The
+  button builder is self-explanatory, and should not need clarification.<br/>
+- `.build()` builds the `MenuBuilder` into a `Menu`, which can be shown to players using the
+  `show(Player)` method.
+
+Let's show this menu to a player:
+
+```java
+Player player = // some reference to a player....
+menu.show(player);
+```
+
+Great. Now, time to go through some necessary definitions:
+
+> **Context**: An object that is created when an action occurs in a menu.
+
+> **State**: Something that can change in a `Menu`.
+
+Let's create a simple toggle button:
+
+```java
+final Menu invMenu = Menu.Inventory
+        .chest(2)
+        .name(Component.empty())
+        .state(
+                State.state("clicked", false)
+        )
+        .button(Button.builder()
+                .item(ItemStack.of(Material.RED_WOOL))
+                .slot(3)
+                .leftClicked(ctx -> {
+                    final Menu menu = ctx.menu();
+                    final State<Boolean> clicked = menu.getState("clicked");
+
+                    clicked.setValue(!clicked.getValue());
+                    ctx.button().setItem(
+                            clicked.getValue()
+                                    ? ItemStack.of(Material.LIME_WOOL)
+                                    : ItemStack.of(Material.RED_WOOL)
+                    );
+                }))
+        .build();
+```
+
+As you can see, `State` is not type-safe. If you value type-safety over brevity, you can simply extend
+one of the `Menu` classes in order to keep type safety. Let's created the same thing, but type-safe:
+
+```java
+public class TypeSafeMenu extends InventoryMenu {
+
+    public TypeSafeMenu(Component name) {
+        super(MenuType.GENERIC_3X3, name); // A 3 rows tall chest GUI
+
+        final State<Boolean> clicked = State.state("clicked", false);
+        this.addState(clicked);
+
+        this.addButton(
+                Button.builder()
+                        .item(ItemStack.of(Material.RED_WOOL))
+                        .slot(3)
+                        .leftClicked(ctx -> {
+
+                            clicked.setValue(!clicked.getValue());
+                            ctx.button().setItem(
+                                    clicked.getValue()
+                                            ? ItemStack.of(Material.LIME_WOOL)
+                                            : ItemStack.of(Material.RED_WOOL)
+                            );
+                        })
+                        .build()
+        );
+    }
+}
+```
+
+As a matter of fact, you don't even need `State` when you are in the constructor. You can simply
+use variables, like this:
+
+```java
+public class TypeSafeMenu extends InventoryMenu {
+
+    public TypeSafeMenu(Component name) {
+        super(MenuType.GENERIC_3X3, name); // A 3 rows tall chest GUI
+
+        boolean[] clicked = { false };
+
+        this.addButton(
+                Button.builder()
+                        .item(ItemStack.of(Material.RED_WOOL))
+                        .slot(3)
+                        .leftClicked(ctx -> {
+                            clicked[0] = !clicked[0];
+
+                            ctx.button().setItem(
+                                    clicked[0]
+                                            ? ItemStack.of(Material.LIME_WOOL)
+                                            : ItemStack.of(Material.RED_WOOL)
+                            );
+                        })
+                        .build()
+        );
+    }
+}
+```
+
+We use an array with the variable since variables used in lambdas must be effectively final.
+Alternatively, you can manually construct a `Button` and use setters.
+
+-----------------------------------------
+---
+title: Plugin Configuration
+---
+
+Not only can you choose a name for your plugin, but you can also do everything else
+you would be able to do in a yaml file! Let's try it out:
+
+```java
+@Plugin(
+    name = "example",
+    description = "An example plugin that adds example features."
+)
+public class ExamplePlugin extends JavaPlugin {}
+```
+
+Let's add support for PAPI (Placeholder API):
+
+```java
+@Plugin(
+    name = "example",
+    description = "An example plugin that adds example features.",
+    dependencies = {
+        @Dependency("PlaceholderAPI")
+    }
+)
+```
+
+Let's make it required:
+
+```java
+@Plugin(
+    name = "example",
+    description = "An example plugin that adds example features.",
+    dependencies = {
+        @Dependency("PlaceholderAPI", required = true)
+    }
+)
+```
+
+-----------------------------------------
+---
+title: Why Quartz?
+sidebar:
+  order: 1
+---
+
+Quartz was designed to ease the pain points of Minecraft plugin development. As of late, the ecosystem
+surrounding plugins has gotten more and more convoluted, with this starting when Mojang decided to
+incrementally shift towards a data-driven ideology for Minecraft, with API's such as Bukkit and
+Spigot staying behind. Paper expoes these new features, but they are usually verbose, redundant,
+and unenjoyable to write. That's where Quartz comes in.
+
+Quartz provides neat wrappers around all convoluted parts of plugin development, such as commands,
+events, tasks, and much more. Its purpose is for the developer to facilitate their logic, not when
+or where it should be executed.
+
+-----------------------------------------
+---
+title: Development Environment
+sidebar:
+  order: 2
+---
+
+**Quartz** uses [Jitpack](https://jitpack.io/) as its repository.
+Below is all you need to get it running:
+
+```kt
+repositories {
+  mavenCentral()
+  maven {
+    name = "papermc"
+    url = uri("https://repo.papermc.io/repository/maven-public/")
+  }
+  maven("https://jitpack.io")
+}
+
+dependencies {
+    implementation("com.github.SlimifiedxD:bedrock:main-SNAPSHOT")
+    annotationProcessor("com.github.SlimifiedxD:bedrock:main-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.9-R0.1-SNAPSHOT")
+}
+```
+
+Just like that, you're ready for plugin development with **Quartz**.
+
+-----------------------------------------
+---
+title: Kotlin
+---
+
+Quartz supports Kotlin in order to make the developer experience feel more native. Features that Quartz provides for Kotlin
+are just convenience over what would take more boilerplate in Java. Below is a showcase of some of the most common utilities:
+
+```kotlin
+val Player player = ...
+player.sendMessage("<red>Hello, <green>World!".component())
+```
+
+-----------------------------------------
+---
+title: Migration
+---
+
+We're glad that you're deciding to migrate from Paper to **Quartz**. The migration should be
+relatively simple. With that being said, let's do this!
+
+This is the order in which you will be migrating features:
+
+- Plugin Declaration
+- Listeners
+- Commands
+- GUI's
+- Tasks
+
+Let's do the first step in the migration process: using the `@Plugin` annotation.<br/>
+Say we have a `paper-plugin.yml` like this:
+
+```yml
+name: MigrationPlugin
+version: "1.0"
+main: foo.bar.baz.MigrationPlugin
+description: A dummy plugin that does not actually exist.
+api-version: "1.21.10"
+bootstrapper: foo.bar.baz.MigrationPluginBootstrap
+loader: foo.bar.baz.MigrationPluginLoader
+```
+
+On your class that extends `JavaPlugin`, in this case, `MigrationPlugin`, annotate it with `@Plugin`:
+
+```java
+@Plugin(
+        value = "migration",
+        description = "A dummy plugin that does not actually exist.",
+        apiVersion = "1.21.10",
+        version = "1.0",
+        bootstrapper = MigrationPluginBootstrap.class,
+        loader = MigrationPluginLoader.class
+)
+public class MigrationPlugin extends JavaPlugin {
+
+}
+```
+
+Now, you can delete your `paper-plugin.yml` from your `src/main/resources` directory.
+
+Second, if you have any classes that implement Bukkit's listener (`org.bukkit.event.Listener`), those should
+be migrated first.
+
+Say we have a listener like this:
+
+```java
+public class Listeners implements Listener {
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        // ...
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        // ...
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        // ...
+    }
+}
+```
+
+And we register it like this:
+
+```java
+@Plugin(
+        value = "migration",
+        description = "A dummy plugin that does not actually exist.",
+        apiVersion = "1.21.10",
+        version = "1.0",
+        bootstrapper = MigrationPluginBootstrap.class,
+        loader = MigrationPluginLoader.class
+)
+public class MigrationPlugin extends JavaPlugin {
+    @Override
+    public void onEnable() {
+        getServer().getPluginManager().registerEvents(new Listeners());
+    }
+}
+```
+
+-----------------------------------------
+---
+title: Getting Started
+sidebar:
+  order: 3
+---
+
+Throughout these docs, there will not be much explanation, and moreso just covering of the features
+provided by the **framework**. The code is well-documented and is usually self-explanatory. With
+that being said, let's create our first plugin with **Quartz**:
+
+```java
+@Plugin("example")
+public class ExamplePlugin extends JavaPlugin {}
+```
+
+Just like that, you've created your first plugin. No manual yml registration, and no need to leave your source file.
+
+-----------------------------------------
+---
+title: Ticks
+---
+
+Ticks is a standard utility class that turns magic numbers like `20L * 3` into `Ticks.seconds(3)`.
+Showcasing different units of time:
+
+```java
+Duration duration = ...
+Ticks.duration(duration);
+Ticks.seconds(1);
+Ticks.minutes(1);
+Ticks.hours(1);
+Ticks.days(1);
+Ticks.seconds(1.5);
+```
+
+There are also methods that take in fractional values (like decimals) and convert them to ticks,
+as seen above.
+
+-----------------------------------------
+---
+title: Commands
+---
+
+In **Quartz**, commands are not implemented in the framework itself. Instead, the framework
+includes a transitive dependency: [Funmands](https://github.com/SlimifiedxD/funmands). Funmands is a declarative command framework
+for Minecraft, and is built by the same team behind Quartz. The reason it is not included in
+Quartz itself is because Bedrock is built for **Paper**, whilst Funmands is designed to be platform-agonstic and run
+on any environment that has brigadier, including **Paper**, **Velocity**, **Fabric**, and **Forge**.
+With that being said, let's make a command using **Funmands**:
+
+```java
+public class ExampleCommand extends PaperCommand {
+    public ExampleCommand() {
+        super("example", "An example command.", "e", "ex");
+
+        this.addFormat("", ctx -> {
+            ctx.getExecutor().sendMessage("this is executed when a sender does /example, /e, or /ex!");
+        });
+
+        this.addFormat("target:player", ctx -> {
+            final Player target = ctx.get("player");
+            ctx.getExecutor().sendMessage(target.displayName());
+        });
+    }
+}
+```
+
+Now, let's register it:
+
+```java
+PaperFunmandsManager commandManager = new PaperFunmandsManager(this.getLifecycleManager());
+
+commandManager.registerCommand(new ExampleCommand());
+```
+
+If you would like more detail on Funmands, visit the [docs](https://slimecraft.gitbook.io/slimecraft-docs).
+
+-----------------------------------------
+---
+title: Join Messages
+---
+
+```java
+@Plugin("join-messages")
+public class JoinMessagesPlugin extends JavaPlugin {
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    
+    @Override
+    public void onEnable() {
+        final Config config = ConfigLoader.load(Config.class, FileExtension.YML);
+        
+        EventNode.global()
+                .addListener(
+                        EventListener.of(PlayerJoinEvent.class)
+                                .handler(event -> {
+                                    final String joinText = config.joinText;
+                                    
+                                    if (joinText.isEmpty()) {
+                                        event.joinMessage(null);
+                                        return;
+                                    }
+                                    
+                                    event.joinMessage(MINI_MESSAGE.deserialize(
+                                            joinText,
+                                            TagResolver.resolver(
+                                                    "player",
+                                                    Tag.selfClosingInserting(event.getPlayer().displayName()))
+                                    ));
+                                })
+                );
+    }
+    
+    @Configuration("config")
+    private static final class Config {
+        public String joinText = "<yellow><player> joined the game</yellow>";
+    }
+}
+```
+-----------------------------------------
